@@ -6,11 +6,11 @@ export const dynamic = 'force-dynamic';
 
 export async function POST(request: Request) {
   try {
-    // Inicializar Stripe DENTRO da função
+    // Initialize Stripe inside the function
     const stripeKey = process.env.STRIPE_SECRET_KEY;
     
     if (!stripeKey) {
-      throw new Error('STRIPE_SECRET_KEY não configurada');
+      throw new Error('STRIPE_SECRET_KEY not configured');
     }
     
     const stripe = new Stripe(stripeKey);
@@ -19,7 +19,7 @@ export async function POST(request: Request) {
 
     if (!email) {
       return NextResponse.json(
-        { error: "Email é obrigatório" },
+        { error: "Email is required" },
         { status: 400 }
       );
     }
@@ -31,10 +31,10 @@ export async function POST(request: Request) {
           price_data: {
             currency: "brl",
             product_data: {
-              name: "INTEGRETYTAG - Cartão Digital NFC",
-              description: "Acesso vitalício ao sistema de cartão digital",
+              name: "INTEGRETYTAG - Cartao Digital NFC",
+              description: "Acesso vitalicio ao sistema de cartao digital",
             },
-            unit_amount: 9900, // R$ 99,00
+            unit_amount: 9900,
           },
           quantity: 1,
         },
@@ -47,7 +47,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ sessionId: session.id });
   } catch (error: any) {
-    console.error("Erro ao criar checkout:", error);
+    console.error("Error creating checkout:", error);
     return NextResponse.json(
       { error: error.message },
       { status: 500 }

@@ -1,13 +1,16 @@
 import { NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase";
+import { getSupabase } from "@/lib/supabase";
+
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
 
 export async function POST(request: Request) {
   try {
+    const supabase = getSupabase();
     const { email, sessionId } = await request.json();
 
-    console.log("🧪 Teste de webhook - Email:", email);
+    console.log("Test webhook - Email:", email);
 
-    // GERAR CHAVE AUTOMATICAMENTE
     const { data: keyData, error: keyError } = await supabase
       .rpc("create_access_key", {
         p_email: email,
@@ -16,12 +19,15 @@ export async function POST(request: Request) {
       });
 
     if (keyError) {
-      console.error("❌ Erro ao gerar chave:", keyError);
-      return NextResponse.json({ error: "Erro ao gerar chave" }, { status: 500 });
+      console.error("Error generating key:", keyError);
+      return NextResponse.json(
+        { error: "Error generating access key" },
+        { status: 500 }
+      );
     }
 
-    const generatedKey = keyData[0].access_key;
-    console.log("🔑 Chave gerada:", generatedKey);
+    const generatedKey = keyData[0]?.access_key;
+    console.log("Generated key:", generatedKey);
 
     return NextResponse.json({
       success: true,
@@ -29,7 +35,7 @@ export async function POST(request: Request) {
       email: email,
     });
   } catch (error: any) {
-    console.error("❌ Erro:", error);
+    console.error("Error in test webhook:", error);
     return NextResponse.json(
       { error: error.message },
       { status: 500 }
