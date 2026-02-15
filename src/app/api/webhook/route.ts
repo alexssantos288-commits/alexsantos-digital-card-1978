@@ -72,7 +72,6 @@ export async function POST(request: Request) {
           const generatedKey = keyData[0]?.access_key;
           console.log('🔑 Chave gerada:', generatedKey);
 
-          // TODO: Enviar email com a chave (implementar depois com Resend)
           console.log('📧 Email seria enviado para:', customerEmail);
           console.log('🔑 Com a chave:', generatedKey);
 
