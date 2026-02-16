@@ -6,7 +6,6 @@ export const dynamic = 'force-dynamic';
 
 export async function POST(request: Request) {
   try {
-    // Initialize Stripe inside the function
     const stripeKey = process.env.STRIPE_SECRET_KEY;
     
     if (!stripeKey) {
@@ -31,8 +30,8 @@ export async function POST(request: Request) {
           price_data: {
             currency: "brl",
             product_data: {
-              name: "INTEGRETYTAG - Cartao Digital NFC",
-              description: "Acesso vitalicio ao sistema de cartao digital",
+              name: "INTEGRETYTAG - Cartão Digital NFC",
+              description: "Acesso vitalício ao cartão digital personalizado",
             },
             unit_amount: 9900,
           },
@@ -43,11 +42,16 @@ export async function POST(request: Request) {
       customer_email: email,
       success_url: `${process.env.NEXT_PUBLIC_URL}/sucesso?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.NEXT_PUBLIC_URL}/comprar`,
+      metadata: {
+        customer_email: email,
+      },
     });
 
-    return NextResponse.json({ sessionId: session.id });
+    return NextResponse.json({ 
+      url: session.url 
+    });
   } catch (error: any) {
-    console.error("Error creating checkout:", error);
+    console.error("Error creating checkout session:", error);
     return NextResponse.json(
       { error: error.message },
       { status: 500 }

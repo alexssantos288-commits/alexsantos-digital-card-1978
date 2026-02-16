@@ -25,10 +25,31 @@ export function getSupabase(): SupabaseClient {
   return supabaseInstance;
 }
 
-// Para compatibilidade com código antigo
-export const supabase = {
-  get auth() { return getSupabase().auth; },
-  get from() { return getSupabase().from.bind(getSupabase()); },
-  get rpc() { return getSupabase().rpc.bind(getSupabase()); },
-  get storage() { return getSupabase().storage; },
-};
+// Cliente Supabase para uso direto
+export const supabase = (function() {
+  // Verifica se está no ambiente do navegador
+  if (typeof window !== 'undefined') {
+    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    
+    if (url && key) {
+      return createClient(url, key, {
+        auth: {
+          persistSession: true,
+          autoRefreshToken: true,
+        },
+        db: {
+          schema: 'public'
+        }
+      });
+    }
+  }
+  
+  // No servidor, usa lazy loading
+  return {
+    get auth() { return getSupabase().auth; },
+    get from() { return getSupabase().from.bind(getSupabase()); },
+    get rpc() { return getSupabase().rpc.bind(getSupabase()); },
+    get storage() { return getSupabase().storage; },
+  } as any;
+})();
