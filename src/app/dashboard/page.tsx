@@ -14,6 +14,7 @@ import { PixManager } from "@/components/dashboard/PixManager";
 import { CatalogManager } from "@/components/dashboard/CatalogManager";
 import { FormManager } from "@/components/dashboard/FormManager";
 import { LinkOrderManager } from "@/components/dashboard/LinkOrderManager";
+import { Session } from '@supabase/supabase-js';
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -46,7 +47,7 @@ export default function DashboardPage() {
     checkUser();
 
     // LISTENER para mudanças de autenticação
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event: any, session: any) => {
       if (!session) {
         router.push("/auth/login");
       } else {
