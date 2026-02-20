@@ -39,35 +39,44 @@ export async function POST(req: NextRequest) {
 
     try {
       const supabase = getSupabase();
-
-      // VERIFICAR SE JÁ EXISTE (evitar duplicatas)
-      const { data: existingKey } = await supabase
-        .from('access_keys')
-        .select('access_key, email')
-        .eq('stripe_session_id', session.id)
-        .single();
-
       let accessKey: string;
+      let isNewKey = false;
 
-      if (existingKey) {
-        // Já foi processado, usar chave existente
-        console.log('⚠️ Session already processed:', session.id);
-        accessKey = existingKey.access_key;
-      } else {
-        // Primeira vez, gerar nova chave
-        const { data, error } = await supabase.rpc('create_access_key', {
-          p_email: customerEmail,
-          p_nfc_tag_id: null,
-          p_order_id: session.id,
-        });
+      // Tentar gerar nova chave
+      const { data, error } = await supabase.rpc('create_access_key', {
+        p_email: customerEmail,
+        p_nfc_tag_id: null,
+        p_order_id: session.id,
+      });
 
-        if (error) {
-          console.error('Error generating key:', error);
+      if (error) {
+        // Se erro for duplicata (código 23505), buscar chave existente
+        if (error.code === '23505') {
+          console.log('⚠️ Duplicate session detected, fetching existing key:', session.id);
+          
+          const { data: existingData, error: fetchError } = await supabase
+            .from('access_keys')
+            .select('access_key')
+            .eq('stripe_session_id', session.id)
+            .single();
+
+          if (fetchError || !existingData) {
+            console.error('❌ Error fetching existing key:', fetchError);
+            return NextResponse.json({ error: 'Error retrieving access key' }, { status: 500 });
+          }
+
+          accessKey = existingData.access_key;
+          console.log('✅ Using existing key:', accessKey);
+        } else {
+          // Outro erro, retornar erro
+          console.error('❌ Error generating key:', error);
           return NextResponse.json({ error: 'Error generating access key' }, { status: 500 });
         }
-
+      } else {
+        // Chave gerada com sucesso
         const result = Array.isArray(data) ? data[0] : data;
         accessKey = result.access_key;
+        isNewKey = true;
         console.log('✅ New key generated:', accessKey);
       }
 
@@ -79,7 +88,7 @@ export async function POST(req: NextRequest) {
 
       const resend = new Resend(process.env.RESEND_API_KEY);
 
-      // ENVIAR EMAIL
+      // ENVIAR EMAIL (sempre, seja chave nova ou existente)
       const emailResult = await resend.emails.send({
         from: 'INTEGRETY TAG <onboarding@resend.dev>',
         to: customerEmail,
@@ -133,12 +142,14 @@ export async function POST(req: NextRequest) {
       console.log('✅ Email sent to:', customerEmail);
       console.log('✅ Email ID:', emailResult.data?.id);
       console.log('✅ Access key:', accessKey);
+      console.log('✅ Is new key:', isNewKey);
 
       return NextResponse.json({ 
         received: true, 
         key: accessKey, 
         email: customerEmail,
-        emailSent: true 
+        emailSent: true,
+        isNewKey 
       });
 
     } catch (err: any) {
