@@ -7,8 +7,6 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2026-01-28.clover',
 });
 
-const resend = new Resend(process.env.RESEND_API_KEY!);
-
 export async function POST(req: NextRequest) {
   const body = await req.text();
   const sig = req.headers.get('stripe-signature');
@@ -30,7 +28,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Invalid signature' }, { status: 400 });
   }
 
-  // PROCESSAR EVENTO checkout.session.completed
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object as Stripe.Checkout.Session;
     const customerEmail = session.customer_email || session.customer_details?.email;
@@ -55,12 +52,19 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: 'Error generating access key' }, { status: 500 });
       }
 
-      // RPC retorna array, pegar o primeiro item
       const result = Array.isArray(data) ? data[0] : data;
       const accessKey = result.access_key;
 
+      // INSTANCIAR RESEND AQUI (dentro da função)
+      if (!process.env.RESEND_API_KEY) {
+        console.error('❌ RESEND_API_KEY not configured');
+        return NextResponse.json({ error: 'Email service not configured' }, { status: 500 });
+      }
+
+      const resend = new Resend(process.env.RESEND_API_KEY);
+
       // ENVIAR EMAIL
-      await resend.emails.send({
+      const emailResult = await resend.emails.send({
         from: 'INTEGRETY TAG <onboarding@resend.dev>',
         to: customerEmail,
         subject: '🎉 Sua chave de acesso chegou!',
@@ -111,9 +115,15 @@ export async function POST(req: NextRequest) {
       });
 
       console.log('✅ Email sent to:', customerEmail);
+      console.log('✅ Email ID:', emailResult.data?.id);
       console.log('✅ Access key:', accessKey);
 
-      return NextResponse.json({ received: true, key: accessKey, email: customerEmail });
+      return NextResponse.json({ 
+        received: true, 
+        key: accessKey, 
+        email: customerEmail,
+        emailSent: true 
+      });
 
     } catch (err: any) {
       console.error('❌ Error processing webhook:', err);
