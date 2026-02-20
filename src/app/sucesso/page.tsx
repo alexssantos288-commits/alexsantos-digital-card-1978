@@ -1,87 +1,163 @@
-"use client";
+'use client';
 
-import { useEffect, useState, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
-import { Check, Mail, ArrowRight } from "lucide-react";
-import Link from "next/link";
+import { useEffect, useState } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
+import { Suspense } from 'react';
 
 function SucessoContent() {
   const searchParams = useSearchParams();
-  const sessionId = searchParams.get("session_id");
+  const router = useRouter();
+  const [accessKey, setAccessKey] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
+  const [loading, setLoading] = useState(true);
+
+  const copyKey = async () => {
+    if (!accessKey) return;
+    try {
+      await navigator.clipboard.writeText(accessKey);
+      alert('✅ Chave copiada para a área de transferência!');
+    } catch (err) {
+      console.error('Erro ao copiar:', err);
+      alert('Erro ao copiar chave');
+    }
+  };
+
+  useEffect(() => {
+    const sessionId = searchParams.get('session_id');
+  
+    if (!sessionId) {
+      setLoading(false);
+      return;
+    }
+  
+    // Tentar buscar até 5x (webhook pode demorar alguns segundos)
+    let attempts = 0;
+    const maxAttempts = 5;
+  
+    const fetchKey = async () => {
+      try {
+        const res = await fetch(`/api/get-key?session_id=${sessionId}`);
+        const data = await res.json();
+  
+        if (data.key) {
+          setAccessKey(data.key);
+          setEmail(data.email);
+          setLoading(false);
+        } else if (attempts < maxAttempts) {
+          attempts++;
+          setTimeout(fetchKey, 2000); // Tentar novamente em 2s
+        } else {
+          setLoading(false);
+        }
+      } catch {
+        if (attempts < maxAttempts) {
+          attempts++;
+          setTimeout(fetchKey, 2000);
+        } else {
+          setLoading(false);
+        }
+      }
+    };
+  
+    fetchKey();
+  }, [searchParams]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-black flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-cyan-400"></div>
+      </div>
+    );
+  }
 
   return (
-    <div className="max-w-md w-full text-center">
-      <div className="bg-[#0a0a0a] border border-white/10 rounded-2xl p-8">
+    <div className="min-h-screen bg-black flex items-center justify-center p-4">
+      <div className="max-w-lg w-full bg-[#0a0a0a] border border-cyan-500 rounded-2xl p-8 text-center">
+        
         {/* ÍCONE DE SUCESSO */}
-        <div className="w-20 h-20 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
-          <Check className="w-12 h-12 text-green-500" />
+        <div className="flex justify-center mb-6">
+          <div className="w-20 h-20 bg-cyan-500/10 rounded-full flex items-center justify-center border-2 border-cyan-500">
+            <span className="text-4xl">🎉</span>
+          </div>
         </div>
 
         {/* TÍTULO */}
-        <h1 className="text-3xl font-black uppercase tracking-tighter mb-4">
-          PAGAMENTO <span className="text-[#1ccec8]">CONFIRMADO!</span>
+        <h1 className="text-3xl font-bold text-white mb-2">
+          Parabéns!
         </h1>
-
-        {/* MENSAGEM */}
-        <p className="text-gray-400 mb-6">
-          Seu pagamento foi processado com sucesso! 🎉
+        <p className="text-gray-400 mb-8">
+          Sua compra foi confirmada com sucesso!
         </p>
 
-        {/* AVISO IMPORTANTE */}
-        <div className="bg-yellow-500/10 border border-yellow-500/50 rounded-lg p-4 mb-6">
-          <p className="text-sm text-yellow-200 mb-2">
-            ⚠️ <strong>IMPORTANTE:</strong>
-          </p>
-          <p className="text-xs text-gray-300">
-            Por enquanto, você precisa ir ao <strong>admin</strong> para gerar a chave manualmente.
-          </p>
-          <p className="text-xs text-gray-400 mt-2">
-            (O envio automático será configurado no deploy!)
-          </p>
-        </div>
+        {/* CHAVE DE ACESSO */}
+        {accessKey && (
+          <div className="bg-[#111] border-2 border-cyan-500 rounded-xl p-6 mb-6">
+            <p className="text-gray-400 text-sm mb-2">🔑 Sua chave de acesso:</p>
+            <p className="text-cyan-400 text-2xl font-bold tracking-widest mb-4">
+              {accessKey}
+            </p>
+            <button
+              onClick={copyKey}
+              className="bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-400 border border-cyan-500 px-4 py-2 rounded-lg text-sm transition-all"
+            >
+              📋 Copiar Chave
+            </button>
+          </div>
+        )}
 
-        {/* EMAIL */}
-        <div className="bg-blue-500/10 border border-blue-500/50 rounded-lg p-4 mb-6">
-          <Mail className="w-8 h-8 text-blue-500 mx-auto mb-2" />
-          <p className="text-sm text-gray-300">
-            📧 Em produção, você receberá sua <strong className="text-white">chave de acesso</strong> por email!
-          </p>
-        </div>
+        {/* AVISO DE EMAIL */}
+        {email && (
+          <div className="bg-green-500/10 border border-green-500/30 rounded-xl p-4 mb-6">
+            <p className="text-green-400 text-sm">
+              📧 Email enviado para: <strong>{email}</strong>
+            </p>
+            <p className="text-gray-500 text-xs mt-1">
+              Verifique também sua pasta de spam
+            </p>
+          </div>
+        )}
 
-        {/* PRÓXIMOS PASSOS */}
-        <div className="text-left bg-white/5 rounded-lg p-4 mb-6">
-          <p className="text-sm font-bold text-white mb-3">Para testar agora:</p>
-          <ol className="text-sm text-gray-400 space-y-2">
-            <li>1️⃣ Acesse o painel admin</li>
-            <li>2️⃣ Gere uma chave com seu email</li>
-            <li>3️⃣ Ative sua conta</li>
-            <li>4️⃣ Comece a usar!</li>
+        {/* INSTRUÇÕES */}
+        <div className="bg-[#111] rounded-xl p-4 mb-8 text-left">
+          <p className="text-white font-semibold mb-3">📱 Como ativar sua tag:</p>
+          <ol className="space-y-2">
+            {[
+              'Acesse seu dashboard',
+              'Vá em "Ativar Tag"',
+              'Insira o código acima',
+              'Pronto! Sua tag está ativa! 🚀',
+            ].map((step, index) => (
+              <li key={index} className="flex items-center gap-3 text-gray-400 text-sm">
+                <span className="w-6 h-6 bg-cyan-500/20 text-cyan-400 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">
+                  {index + 1}
+                </span>
+                {step}
+              </li>
+            ))}
           </ol>
         </div>
 
         {/* BOTÕES */}
-        <div className="space-y-3">
-          <Link
-            href="/admin/gerar-chave"
-            className="block w-full py-3 bg-[#1ccec8] hover:bg-[#18b5b0] text-black font-bold uppercase rounded-lg transition flex items-center justify-center gap-2"
+        <div className="flex flex-col gap-3">
+          <button
+            onClick={() => router.push('/dashboard')}
+            className="w-full bg-cyan-500 hover:bg-cyan-600 text-black font-bold py-3 px-6 rounded-xl transition-all"
           >
-            IR PARA ADMIN
-            <ArrowRight className="w-4 h-4" />
-          </Link>
-
-          <Link
-            href="/ativar"
-            className="block w-full py-3 bg-white/10 hover:bg-white/20 text-white font-bold uppercase rounded-lg transition"
+            🚀 Ir para o Dashboard
+          </button>
+          <button
+            onClick={() => router.push('/')}
+            className="w-full bg-transparent hover:bg-white/5 text-gray-400 border border-gray-700 font-medium py-3 px-6 rounded-xl transition-all"
           >
-            IR PARA ATIVAÇÃO
-          </Link>
+            Voltar para o início
+          </button>
         </div>
 
-        {sessionId && (
-          <p className="text-xs text-gray-500 mt-4">
-            ID da Transação: {sessionId.slice(0, 20)}...
-          </p>
-        )}
+        {/* FOOTER */}
+        <p className="text-gray-600 text-xs mt-6">
+          Dúvidas? integretytecnologia@gmail.com
+        </p>
+
       </div>
     </div>
   );
@@ -89,15 +165,12 @@ function SucessoContent() {
 
 export default function SucessoPage() {
   return (
-    <div className="min-h-screen bg-black text-white flex items-center justify-center p-4">
-      <Suspense fallback={
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-[#1ccec8] mx-auto mb-4"></div>
-          <p className="text-xl">Carregando...</p>
-        </div>
-      }>
-        <SucessoContent />
-      </Suspense>
-    </div>
+    <Suspense fallback={
+      <div className="min-h-screen bg-black flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-cyan-400"></div>
+      </div>
+    }>
+      <SucessoContent />
+    </Suspense>
   );
 }
