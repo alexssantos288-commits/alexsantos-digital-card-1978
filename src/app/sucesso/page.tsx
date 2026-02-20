@@ -10,6 +10,7 @@ function SucessoContent() {
   const [accessKey, setAccessKey] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [loading, setLoading] = useState(true);
+  const [redirecting, setRedirecting] = useState(false);
 
   const copyKey = async () => {
     if (!accessKey) return;
@@ -22,30 +23,53 @@ function SucessoContent() {
     }
   };
 
+  const handleContinue = async () => {
+    setRedirecting(true);
+
+    if (!email) {
+      router.push('/login');
+      return;
+    }
+
+    try {
+      const res = await fetch(`/api/check-email?email=${encodeURIComponent(email)}`);
+      const data = await res.json();
+
+      if (data.hasAccount) {
+        router.push(`/login?email=${encodeURIComponent(email)}`);
+      } else {
+        router.push(`/ativar?email=${encodeURIComponent(email)}&key=${encodeURIComponent(accessKey)}`);
+      }
+    } catch {
+      router.push('/login');
+    } finally {
+      setRedirecting(false);
+    }
+  };
+
   useEffect(() => {
     const sessionId = searchParams.get('session_id');
-  
+
     if (!sessionId) {
       setLoading(false);
       return;
     }
-  
-    // Tentar buscar até 5x (webhook pode demorar alguns segundos)
+
     let attempts = 0;
     const maxAttempts = 5;
-  
+
     const fetchKey = async () => {
       try {
         const res = await fetch(`/api/get-key?session_id=${sessionId}`);
         const data = await res.json();
-  
+
         if (data.key) {
           setAccessKey(data.key);
           setEmail(data.email);
           setLoading(false);
         } else if (attempts < maxAttempts) {
           attempts++;
-          setTimeout(fetchKey, 2000); // Tentar novamente em 2s
+          setTimeout(fetchKey, 2000);
         } else {
           setLoading(false);
         }
@@ -58,7 +82,7 @@ function SucessoContent() {
         }
       }
     };
-  
+
     fetchKey();
   }, [searchParams]);
 
@@ -73,7 +97,7 @@ function SucessoContent() {
   return (
     <div className="min-h-screen bg-black flex items-center justify-center p-4">
       <div className="max-w-lg w-full bg-[#0a0a0a] border border-cyan-500 rounded-2xl p-8 text-center">
-        
+
         {/* ÍCONE DE SUCESSO */}
         <div className="flex justify-center mb-6">
           <div className="w-20 h-20 bg-cyan-500/10 rounded-full flex items-center justify-center border-2 border-cyan-500">
@@ -82,12 +106,8 @@ function SucessoContent() {
         </div>
 
         {/* TÍTULO */}
-        <h1 className="text-3xl font-bold text-white mb-2">
-          Parabéns!
-        </h1>
-        <p className="text-gray-400 mb-8">
-          Sua compra foi confirmada com sucesso!
-        </p>
+        <h1 className="text-3xl font-bold text-white mb-2">Parabéns!</h1>
+        <p className="text-gray-400 mb-8">Sua compra foi confirmada com sucesso!</p>
 
         {/* CHAVE DE ACESSO */}
         {accessKey && (
@@ -140,11 +160,20 @@ function SucessoContent() {
         {/* BOTÕES */}
         <div className="flex flex-col gap-3">
           <button
-            onClick={() => router.push('/dashboard')}
-            className="w-full bg-cyan-500 hover:bg-cyan-600 text-black font-bold py-3 px-6 rounded-xl transition-all"
+            onClick={handleContinue}
+            disabled={redirecting}
+            className="w-full bg-cyan-500 hover:bg-cyan-600 text-black font-bold py-3 px-6 rounded-xl transition-all disabled:opacity-50"
           >
-            🚀 Ir para o Dashboard
+            {redirecting ? (
+              <span className="flex items-center justify-center gap-2">
+                <span className="animate-spin rounded-full h-4 w-4 border-t-2 border-black"></span>
+                Verificando...
+              </span>
+            ) : (
+              '🚀 Acessar Dashboard'
+            )}
           </button>
+
           <button
             onClick={() => router.push('/')}
             className="w-full bg-transparent hover:bg-white/5 text-gray-400 border border-gray-700 font-medium py-3 px-6 rounded-xl transition-all"
