@@ -40,22 +40,38 @@ export async function POST(req: NextRequest) {
     try {
       const supabase = getSupabase();
 
-      // GERAR ACCESS KEY
-      const { data, error } = await supabase.rpc('create_access_key', {
-        p_email: customerEmail,
-        p_nfc_tag_id: null,
-        p_order_id: session.id,
-      });
+      // VERIFICAR SE JÁ EXISTE (evitar duplicatas)
+      const { data: existingKey } = await supabase
+        .from('access_keys')
+        .select('access_key, email')
+        .eq('stripe_session_id', session.id)
+        .single();
 
-      if (error) {
-        console.error('Error generating key:', error);
-        return NextResponse.json({ error: 'Error generating access key' }, { status: 500 });
+      let accessKey: string;
+
+      if (existingKey) {
+        // Já foi processado, usar chave existente
+        console.log('⚠️ Session already processed:', session.id);
+        accessKey = existingKey.access_key;
+      } else {
+        // Primeira vez, gerar nova chave
+        const { data, error } = await supabase.rpc('create_access_key', {
+          p_email: customerEmail,
+          p_nfc_tag_id: null,
+          p_order_id: session.id,
+        });
+
+        if (error) {
+          console.error('Error generating key:', error);
+          return NextResponse.json({ error: 'Error generating access key' }, { status: 500 });
+        }
+
+        const result = Array.isArray(data) ? data[0] : data;
+        accessKey = result.access_key;
+        console.log('✅ New key generated:', accessKey);
       }
 
-      const result = Array.isArray(data) ? data[0] : data;
-      const accessKey = result.access_key;
-
-      // INSTANCIAR RESEND AQUI (dentro da função)
+      // INSTANCIAR RESEND
       if (!process.env.RESEND_API_KEY) {
         console.error('❌ RESEND_API_KEY not configured');
         return NextResponse.json({ error: 'Email service not configured' }, { status: 500 });
