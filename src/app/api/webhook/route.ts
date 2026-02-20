@@ -90,7 +90,7 @@ export async function POST(req: NextRequest) {
 
       // ENVIAR EMAIL (sempre, seja chave nova ou existente)
       const emailResult = await resend.emails.send({
-        from: 'INTEGRETY TAG <onboarding@resend.dev>',
+        from:'INTEGRETY TAG <atendimento@seudominio.com>',
         to: customerEmail,
         subject: '🎉 Sua chave de acesso chegou!',
         html: `
