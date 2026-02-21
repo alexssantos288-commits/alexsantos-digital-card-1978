@@ -14,7 +14,6 @@ import { PixManager } from "@/components/dashboard/PixManager";
 import { CatalogManager } from "@/components/dashboard/CatalogManager";
 import { FormManager } from "@/components/dashboard/FormManager";
 import { LinkOrderManager } from "@/components/dashboard/LinkOrderManager";
-import { Session } from '@supabase/supabase-js';
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -23,21 +22,17 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const [contactSavesCount, setContactSavesCount] = useState(0);
 
-  // VERIFICAÇÃO DE AUTENTICAÇÃO
   useEffect(() => {
     const checkUser = async () => {
       try {
         const { data: { session } } = await supabase.auth.getSession();
-        
         if (!session) {
           router.push("/auth/login");
           return;
         }
-
         setUser(session.user);
         await loadProfile(session.user.id);
         await loadContactSaves(session.user.id);
-        
       } catch (err: any) {
         console.error("❌ Erro crítico:", err);
         setLoading(false);
@@ -46,7 +41,6 @@ export default function DashboardPage() {
 
     checkUser();
 
-    // LISTENER para mudanças de autenticação
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event: any, session: any) => {
       if (!session) {
         router.push("/auth/login");
@@ -60,7 +54,6 @@ export default function DashboardPage() {
     return () => subscription.unsubscribe();
   }, [router]);
 
-  // CARREGAR PERFIL
   const loadProfile = async (userId: string) => {
     try {
       const { data, error } = await supabase
@@ -77,14 +70,12 @@ export default function DashboardPage() {
 
       setProfile(data);
       setLoading(false);
-      
     } catch (err: any) {
       console.error("❌ Erro ao carregar perfil:", err);
       setLoading(false);
     }
   };
 
-  // CARREGAR CONTAGEM DE SALVAMENTOS
   const loadContactSaves = async (userId: string) => {
     try {
       const { count, error } = await supabase
@@ -93,20 +84,17 @@ export default function DashboardPage() {
         .eq("profile_id", userId);
 
       if (error) throw error;
-      
       setContactSavesCount(count || 0);
     } catch (error) {
       console.error("Erro ao carregar contagem de salvamentos:", error);
     }
   };
 
-  // LOGOUT
   const handleLogout = async () => {
     await supabase.auth.signOut();
     router.push("/auth/login");
   };
 
-  // ATUALIZAR PERFIL
   const handleProfileUpdate = () => {
     if (user) {
       loadProfile(user.id);
@@ -114,25 +102,21 @@ export default function DashboardPage() {
     }
   };
 
-  // LOADING STATE
   if (loading) {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center">
         <div className="text-center">
           <div className="w-12 h-12 border-4 border-[#1ccec8] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-400">Carregando dashboard...</p>
+          <p className="text-gray-400 text-sm">Carregando dashboard...</p>
         </div>
       </div>
     );
   }
 
-  // SE NÃO TEM PERFIL
   if (!profile) {
     return (
       <div className="min-h-screen bg-black flex flex-col items-center justify-center p-6">
-        <div className="text-white text-xl mb-4">
-          ⚠️ Perfil não encontrado
-        </div>
+        <p className="text-white text-lg mb-4">⚠️ Perfil não encontrado</p>
         <button
           onClick={handleLogout}
           className="px-6 py-3 bg-red-500/20 text-red-500 font-bold rounded-lg"
@@ -146,168 +130,183 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-black text-white">
 
-      
+      {/* NAVBAR */}
+      <nav className="sticky top-0 z-50 border-b border-white/5 bg-black/80 backdrop-blur-md">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between gap-3">
+          
+          {/* LOGO */}
+          <span className="text-base sm:text-lg font-black uppercase tracking-tighter flex-shrink-0">
+            INTEGRETY<span className="text-[#1ccec8]">TAG</span>
+          </span>
+
+          {/* AÇÕES */}
+          <div className="flex items-center gap-2 sm:gap-3">
+            <Link
+              href={`/p/${profile.username}`}
+              target="_blank"
+              className="px-3 py-2 sm:px-4 sm:py-2 text-xs sm:text-sm bg-[#1ccec8]/10 hover:bg-[#1ccec8]/20 text-[#1ccec8] border border-[#1ccec8]/30 rounded-lg transition font-semibold whitespace-nowrap"
+            >
+              Ver Perfil
+            </Link>
+            <button
+              onClick={handleLogout}
+              className="p-2 sm:px-4 sm:py-2 text-xs sm:text-sm bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white border border-white/10 rounded-lg transition flex items-center gap-2"
+            >
+              <LogOut className="w-4 h-4" />
+              <span className="hidden sm:inline">Sair</span>
+            </button>
+          </div>
+        </div>
+      </nav>
 
       {/* CONTEÚDO PRINCIPAL */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
 
-        {/* CARDS DE ESTATÍSTICAS - 5 COLUNAS */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-6 mb-8">
-          <div className="p-6 rounded-2xl bg-[#0a0a0a] border border-white/5">
-            <User className="w-8 h-8 text-[#1ccec8] mb-3" />
-            <p className="text-2xl font-black truncate">{profile.name || "Sem nome"}</p>
-            <p className="text-xs text-gray-500 uppercase tracking-wider mt-1">Perfil</p>
+        {/* CARDS DE ESTATÍSTICAS */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 mb-6 sm:mb-8">
+
+          <div className="p-4 sm:p-6 rounded-2xl bg-[#0a0a0a] border border-white/5">
+            <User className="w-6 h-6 sm:w-8 sm:h-8 text-[#1ccec8] mb-2 sm:mb-3" />
+            <p className="text-lg sm:text-2xl font-black truncate">{profile.name || "Sem nome"}</p>
+            <p className="text-[10px] sm:text-xs text-gray-500 uppercase tracking-wider mt-1">Perfil</p>
           </div>
 
-          <div className="p-6 rounded-2xl bg-[#0a0a0a] border border-white/5">
-            <LinkIcon className="w-8 h-8 text-[#1ccec8] mb-3" />
-            <p className="text-2xl font-black">{profile.links?.length || 0}</p>
-            <p className="text-xs text-gray-500 uppercase tracking-wider mt-1">Links</p>
+          <div className="p-4 sm:p-6 rounded-2xl bg-[#0a0a0a] border border-white/5">
+            <LinkIcon className="w-6 h-6 sm:w-8 sm:h-8 text-[#1ccec8] mb-2 sm:mb-3" />
+            <p className="text-lg sm:text-2xl font-black">{profile.links?.length || 0}</p>
+            <p className="text-[10px] sm:text-xs text-gray-500 uppercase tracking-wider mt-1">Links</p>
           </div>
 
-          <div className="p-6 rounded-2xl bg-[#0a0a0a] border border-white/5">
-            <ShoppingBag className="w-8 h-8 text-[#1ccec8] mb-3" />
-            <p className="text-2xl font-black">{profile.catalog?.length || 0}</p>
-            <p className="text-xs text-gray-500 uppercase tracking-wider mt-1">Produtos</p>
+          <div className="p-4 sm:p-6 rounded-2xl bg-[#0a0a0a] border border-white/5">
+            <ShoppingBag className="w-6 h-6 sm:w-8 sm:h-8 text-[#1ccec8] mb-2 sm:mb-3" />
+            <p className="text-lg sm:text-2xl font-black">{profile.catalog?.length || 0}</p>
+            <p className="text-[10px] sm:text-xs text-gray-500 uppercase tracking-wider mt-1">Produtos</p>
           </div>
 
-          <div className="p-6 rounded-2xl bg-[#0a0a0a] border border-white/5">
-            <FileText className="w-8 h-8 text-[#1ccec8] mb-3" />
-            <p className="text-2xl font-black">{profile.contactform?.fields?.length || 0}</p>
-            <p className="text-xs text-gray-500 uppercase tracking-wider mt-1">Campos</p>
+          <div className="p-4 sm:p-6 rounded-2xl bg-[#0a0a0a] border border-white/5">
+            <FileText className="w-6 h-6 sm:w-8 sm:h-8 text-[#1ccec8] mb-2 sm:mb-3" />
+            <p className="text-lg sm:text-2xl font-black">{profile.contactform?.fields?.length || 0}</p>
+            <p className="text-[10px] sm:text-xs text-gray-500 uppercase tracking-wider mt-1">Campos</p>
           </div>
 
-          <div className="p-6 rounded-2xl bg-[#0a0a0a] border border-white/5">
-            <Save className="w-8 h-8 text-[#1ccec8] mb-3" />
-            <p className="text-2xl font-black">{contactSavesCount}</p>
-            <p className="text-xs text-gray-500 uppercase tracking-wider mt-1">Contatos Salvos</p>
+          <div className="col-span-2 sm:col-span-1 p-4 sm:p-6 rounded-2xl bg-[#0a0a0a] border border-white/5">
+            <Save className="w-6 h-6 sm:w-8 sm:h-8 text-[#1ccec8] mb-2 sm:mb-3" />
+            <p className="text-lg sm:text-2xl font-black">{contactSavesCount}</p>
+            <p className="text-[10px] sm:text-xs text-gray-500 uppercase tracking-wider mt-1">Contatos Salvos</p>
           </div>
+
         </div>
 
         {/* ACCORDIONS */}
-        <Accordion type="single" collapsible className="space-y-4">
-          
-          {/* PERFIL BÁSICO - AMARELO #eab308 */}
-          <AccordionItem value="basic" className="border border-white/10 rounded-lg px-4 bg-black/20">
-            <AccordionTrigger className="hover:no-underline">
+        <Accordion type="single" collapsible className="space-y-3 sm:space-y-4">
+
+          {/* PERFIL BÁSICO */}
+          <AccordionItem value="basic" className="border border-white/10 rounded-lg px-3 sm:px-4 bg-black/20">
+            <AccordionTrigger className="hover:no-underline py-3 sm:py-4">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ backgroundColor: '#eab308' }}>
-                  <User className="w-5 h-5 text-white" />
+                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: '#eab308' }}>
+                  <User className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                 </div>
-                <span className="text-base font-normal text-white tracking-normal">
-                  Perfil Básico
-                </span>
+                <span className="text-sm sm:text-base font-normal text-white">Perfil Básico</span>
               </div>
             </AccordionTrigger>
-            <AccordionContent className="pt-4">
+            <AccordionContent className="pt-3 sm:pt-4">
               <ProfileEditor profile={profile} onUpdate={handleProfileUpdate} />
             </AccordionContent>
           </AccordionItem>
 
-          {/* REDES SOCIAIS - ROXO #a855f7 */}
-          <AccordionItem value="social" className="border border-white/10 rounded-lg px-4 bg-black/20">
-            <AccordionTrigger className="hover:no-underline">
+          {/* REDES SOCIAIS */}
+          <AccordionItem value="social" className="border border-white/10 rounded-lg px-3 sm:px-4 bg-black/20">
+            <AccordionTrigger className="hover:no-underline py-3 sm:py-4">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ backgroundColor: '#a855f7' }}>
-                  <Share2 className="w-5 h-5 text-white" />
+                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: '#a855f7' }}>
+                  <Share2 className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                 </div>
-                <span className="text-base font-normal text-white tracking-normal">
-                  Redes Sociais
-                </span>
+                <span className="text-sm sm:text-base font-normal text-white">Redes Sociais</span>
               </div>
             </AccordionTrigger>
-            <AccordionContent className="pt-4">
+            <AccordionContent className="pt-3 sm:pt-4">
               <SocialLinksEditor profile={profile} onUpdate={handleProfileUpdate} />
             </AccordionContent>
           </AccordionItem>
 
-          {/* ORDEM DOS LINKS - ROXO ESCURO #8b5cf6 */}
-          <AccordionItem value="order" className="border border-white/10 rounded-lg px-4 bg-black/20">
-            <AccordionTrigger className="hover:no-underline">
+          {/* ORDEM DOS LINKS */}
+          <AccordionItem value="order" className="border border-white/10 rounded-lg px-3 sm:px-4 bg-black/20">
+            <AccordionTrigger className="hover:no-underline py-3 sm:py-4">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ backgroundColor: '#8b5cf6' }}>
-                  <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: '#8b5cf6' }}>
+                  <svg className="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
                   </svg>
                 </div>
-                <span className="text-base font-normal text-white tracking-normal">
-                  Ordem dos Links
-                </span>
+                <span className="text-sm sm:text-base font-normal text-white">Ordem dos Links</span>
               </div>
             </AccordionTrigger>
-            <AccordionContent className="pt-4">
+            <AccordionContent className="pt-3 sm:pt-4">
               <LinkOrderManager profile={profile} onUpdate={handleProfileUpdate} />
             </AccordionContent>
           </AccordionItem>
 
-          {/* PERSONALIZAÇÃO - VERDE #22c55e */}
-          <AccordionItem value="theme" className="border border-white/10 rounded-lg px-4 bg-black/20">
-            <AccordionTrigger className="hover:no-underline">
+          {/* PERSONALIZAÇÃO */}
+          <AccordionItem value="theme" className="border border-white/10 rounded-lg px-3 sm:px-4 bg-black/20">
+            <AccordionTrigger className="hover:no-underline py-3 sm:py-4">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ backgroundColor: '#22c55e' }}>
-                  <Palette className="w-5 h-5 text-white" />
+                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: '#22c55e' }}>
+                  <Palette className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                 </div>
-                <span className="text-base font-normal text-white tracking-normal">
-                  Personalização
-                </span>
+                <span className="text-sm sm:text-base font-normal text-white">Personalização</span>
               </div>
             </AccordionTrigger>
-            <AccordionContent className="pt-4">
+            <AccordionContent className="pt-3 sm:pt-4">
               <CustomizationManager profile={profile} onUpdate={handleProfileUpdate} />
             </AccordionContent>
           </AccordionItem>
 
-          {/* CATÁLOGO - LARANJA #f97316 */}
-          <AccordionItem value="catalog" className="border border-white/10 rounded-lg px-4 bg-black/20">
-            <AccordionTrigger className="hover:no-underline">
+          {/* CATÁLOGO */}
+          <AccordionItem value="catalog" className="border border-white/10 rounded-lg px-3 sm:px-4 bg-black/20">
+            <AccordionTrigger className="hover:no-underline py-3 sm:py-4">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ backgroundColor: '#f97316' }}>
-                  <ShoppingBag className="w-5 h-5 text-white" />
+                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: '#f97316' }}>
+                  <ShoppingBag className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                 </div>
-                <span className="text-base font-normal text-white tracking-normal">
-                  Catálogo
-                </span>
+                <span className="text-sm sm:text-base font-normal text-white">Catálogo</span>
               </div>
             </AccordionTrigger>
-            <AccordionContent className="pt-4">
+            <AccordionContent className="pt-3 sm:pt-4">
               <CatalogManager profile={profile} onUpdate={handleProfileUpdate} />
             </AccordionContent>
           </AccordionItem>
 
-          {/* PIX - CIANO #06b6d4 */}
-          <AccordionItem value="pix" className="border border-white/10 rounded-lg px-4 bg-black/20">
-            <AccordionTrigger className="hover:no-underline">
+          {/* PIX */}
+          <AccordionItem value="pix" className="border border-white/10 rounded-lg px-3 sm:px-4 bg-black/20">
+            <AccordionTrigger className="hover:no-underline py-3 sm:py-4">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ backgroundColor: '#06b6d4' }}>
-                  <Banknote className="w-5 h-5 text-white" />
+                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: '#06b6d4' }}>
+                  <Banknote className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                 </div>
-                <span className="text-base font-normal text-white tracking-normal">
-                  PIX
-                </span>
+                <span className="text-sm sm:text-base font-normal text-white">PIX</span>
               </div>
             </AccordionTrigger>
-            <AccordionContent className="pt-4">
+            <AccordionContent className="pt-3 sm:pt-4">
               <PixManager profile={profile} onUpdate={handleProfileUpdate} />
             </AccordionContent>
           </AccordionItem>
 
-          {/* FORMULÁRIO DE CONTATO - LARANJA #f97316 */}
-          <AccordionItem value="form" className="border border-white/10 rounded-lg px-4 bg-black/20">
-            <AccordionTrigger className="hover:no-underline">
+          {/* FORMULÁRIO DE CONTATO */}
+          <AccordionItem value="form" className="border border-white/10 rounded-lg px-3 sm:px-4 bg-black/20">
+            <AccordionTrigger className="hover:no-underline py-3 sm:py-4">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ backgroundColor: '#f97316' }}>
-                  <FileText className="w-5 h-5 text-white" />
+                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: '#f97316' }}>
+                  <FileText className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                 </div>
-                <span className="text-base font-normal text-white tracking-normal">
-                  Formulário de Contato
-                </span>
+                <span className="text-sm sm:text-base font-normal text-white">Formulário de Contato</span>
               </div>
             </AccordionTrigger>
-            <AccordionContent className="pt-4">
+            <AccordionContent className="pt-3 sm:pt-4">
               <FormManager profile={profile} onUpdate={handleProfileUpdate} />
             </AccordionContent>
           </AccordionItem>
-          
+
         </Accordion>
       </div>
     </div>
