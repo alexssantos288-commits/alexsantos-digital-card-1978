@@ -26,13 +26,13 @@ export default function RegisterPage() {
       return;
     }
 
-    if (password.length &lt; 6) {
+    if (password.length < 6) {
       setError("A senha deve ter pelo menos 6 caracteres");
       setLoading(false);
       return;
     }
 
-    const { data, error: signUpError } = await supabase.auth.signUp({
+    const { error: signUpError } = await supabase.auth.signUp({
       email,
       password,
       options: {
@@ -75,14 +75,12 @@ export default function RegisterPage() {
         {/* FORMULÁRIO */}
         <form onSubmit={handleRegister} className="space-y-4 sm:space-y-5">
 
-          {/* ERRO */}
           {error && (
             <div className="bg-red-500/10 border border-red-500/50 text-red-400 px-4 py-3 rounded-lg text-sm">
               ❌ {error}
             </div>
           )}
 
-          {/* SUCESSO */}
           {success && (
             <div className="bg-green-500/10 border border-green-500/50 text-green-400 px-4 py-3 rounded-lg text-sm">
               ✅ Conta criada! Redirecionando...
@@ -102,9 +100,7 @@ export default function RegisterPage() {
               placeholder="seunome"
               required
             />
-            <p className="text-xs text-gray-600 mt-1">
-              Será usado no link do seu perfil
-            </p>
+            <p className="text-xs text-gray-600 mt-1">Será usado no link do seu perfil</p>
           </div>
 
           {/* EMAIL */}
@@ -163,7 +159,6 @@ export default function RegisterPage() {
           </button>
         </form>
 
-        {/* LINKS */}
         <p className="mt-6 text-center text-sm text-gray-400">
           Já tem conta?{" "}
           <Link href="/auth/login" className="text-[#1ccec8] hover:underline font-semibold">
