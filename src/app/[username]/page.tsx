@@ -8,59 +8,20 @@ import { ContactFormComponent } from "../../components/ContactFormComponent";
 import { PixModal } from "@/components/PixModal";
 import { ImageSlider } from "@/components/ImageSlider";
 import { 
-  FaWhatsapp,
-  FaInstagram,
-  FaFacebookF,
-  FaLinkedinIn,
-  FaTwitter,
-  FaYoutube,
-  FaSpotify,
-  FaPix // ← ÍCONE OFICIAL DO PIX!
+  FaWhatsapp, FaInstagram, FaFacebookF, FaLinkedinIn,
+  FaTwitter, FaYoutube, FaSpotify, FaPix
 } from "react-icons/fa6";
-
-import {
-  MdEmail,
-  MdPhone,
-  MdLocationOn,
-  MdLanguage
-} from "react-icons/md";
-
+import { MdEmail, MdPhone, MdLocationOn, MdLanguage } from "react-icons/md";
 import { AiFillStar } from "react-icons/ai";
 
 interface ProfilePageProps {
-  params: {
-    username: string;
-  };
+  params: { username: string };
 }
-
-
 
 export default function ProfilePage({ params }: ProfilePageProps) {
   const { username } = params;
   const [profile, setProfile] = useState<Profile | null>(null);
   const [pixModalOpen, setPixModalOpen] = useState(false);
-
-
-  const [contactSavesCount, setContactSavesCount] = useState(0);
-  const loadContactSaves = async () => {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      if (!user) return;
-  
-      const { count, error } = await supabase
-        .from("contact_saves")
-        .select("*", { count: "exact", head: true })
-        .eq("profile_id", user.id);
-  
-      if (error) throw error;
-      
-      setContactSavesCount(count || 0);
-    } catch (error) {
-      console.error("Erro ao carregar contagem de salvamentos:", error);
-    }
-  };
-  
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -75,20 +36,7 @@ export default function ProfilePage({ params }: ProfilePageProps) {
         return;
       }
 
-      console.log("🔹 PERFIL CARREGADO:", {
-        username: data?.username,
-        pix_enabled: data?.pix_enabled,
-        pix_key: data?.pix_key,
-        pix_type: data?.pix_type,
-        pix_object: data?.pix
-      });
-
       setProfile(data);
-      console.log("🔹 PIX DEBUG:", {
-        pix_enabled: data?.pix_enabled,
-        pix_key: data?.pix_key,
-        pix_type: data?.pix_type,
-      });
     };
 
     fetchProfile();
@@ -109,26 +57,42 @@ export default function ProfilePage({ params }: ProfilePageProps) {
   const borderRadius = theme.borderRadius || "24";
   const backgroundImage = theme.backgroundImage;
   const backgroundType = theme.backgroundType || "solid";
-  const selectedGradient = theme.selectedGradient;
   const gradientColor1 = theme.gradientColor1;
   const gradientColor2 = theme.gradientColor2;
   const blur = theme.blur || "0";
 
-  // USAR A ORDEM DO PERFIL (do accordion "Ordem dos Links")
+  // ✅ OPACIDADE CORRIGIDA - converte para número entre 0 e 1
+  const opacity = theme.opacity ? Number(theme.opacity) / 100 : 1;
+
+  // ✅ BACKGROUND CORRIGIDO - cobre todos os casos
+  let backgroundStyle: React.CSSProperties = {};
+
+  if (
+    (backgroundType === "gradient" || backgroundType === "gradient-custom") &&
+    gradientColor1 &&
+    gradientColor2
+  ) {
+    // Gradiente das cores salvas
+    backgroundStyle.background = `linear-gradient(135deg, ${gradientColor1} 0%, ${gradientColor2} 100%)`;
+  } else if (
+    backgroundType === "gradient" &&
+    backgroundColor?.startsWith("linear-gradient")
+  ) {
+    // Gradiente salvo diretamente no backgroundColor
+    backgroundStyle.background = backgroundColor;
+  } else if (backgroundType === "image" && backgroundImage) {
+    backgroundStyle.backgroundImage = `url(${backgroundImage})`;
+    backgroundStyle.backgroundSize = "cover";
+    backgroundStyle.backgroundPosition = "center";
+    backgroundStyle.backgroundRepeat = "no-repeat";
+  } else {
+    backgroundStyle.backgroundColor = backgroundColor;
+  }
+
   const contactOrder = profile.contact_order || [
-    "whatsapp",
-    "email",
-    "phone",
-    "pix",
-    "instagram",
-    "facebook",
-    "linkedin",
-    "twitter",
-    "youtube",
-    "spotify",
-    "address",
-    "website",
-    "google_reviews",
+    "whatsapp", "email", "phone", "pix", "instagram",
+    "facebook", "linkedin", "twitter", "youtube",
+    "spotify", "address", "website", "google_reviews",
   ];
 
   const contactActive = profile.contact_active || {};
@@ -152,19 +116,19 @@ export default function ProfilePage({ params }: ProfilePageProps) {
           href={href}
           target={external ? "_blank" : undefined}
           rel={external ? "noopener noreferrer" : undefined}
-          className="flex items-center justify-center p-2 rounded-lg transition-all hover:scale-110 shadow-lg"
+          className="flex items-center justify-center transition-all hover:scale-110 shadow-lg"
           style={{
             backgroundColor: itemColor,
             color: textColor,
             borderRadius: `${parseInt(borderRadius) / 3}px`,
             width: "48px",
             height: "48px",
+            // ✅ OPACIDADE APLICADA
+            opacity: opacity,
           }}
           title={label}
         >
-          <div style={{ width: "20px", height: "20px" }}>
-            {icon}
-          </div>
+          <div style={{ width: "20px", height: "20px" }}>{icon}</div>
         </a>
       );
     }
@@ -180,6 +144,8 @@ export default function ProfilePage({ params }: ProfilePageProps) {
           backgroundColor: itemColor,
           color: textColor,
           borderRadius: `${borderRadius}px`,
+          // ✅ OPACIDADE APLICADA
+          opacity: opacity,
         }}
       >
         {icon}
@@ -189,171 +155,68 @@ export default function ProfilePage({ params }: ProfilePageProps) {
   };
 
   const contactMethods: Record<string, React.ReactNode> = {
-    email:
-      profile.email &&
-      renderContactButton(
-        "email",
-        `mailto:${profile.email}`,
-        <MdEmail size={22} />,
-        "E-MAIL"
-      ),
-    phone:
-      profile.phone &&
-      renderContactButton(
-        "phone",
-        `tel:${profile.phone}`,
-        <MdPhone size={22} />,
-        "TELEFONE"
-      ),
-    whatsapp:
-      profile.whatsapp &&
-      renderContactButton(
-        "whatsapp",
-        `https://wa.me/${profile.whatsapp.replace(/\D/g, "")}`,
-        <FaWhatsapp size={22} />,
-        "WHATSAPP",
-        true
-      ),
-    pix:
-      profile.pix_enabled && profile.pix_key ? (
-        <button
-          key="pix"
-          onClick={() => {
-            console.log("🔹 CLICOU NO PIX!");
-            setPixModalOpen(true);
-          }}
-          className="flex items-center justify-center gap-3 p-4 rounded-xl transition-all hover:scale-105 shadow-lg w-full"
-          style={{
-            backgroundColor: itemColor,
-            color: textColor,
-            borderRadius: `${borderRadius}px`,
-          }}
-        >
-          <FaPix size={22} /> {/* ← ÍCONE OFICIAL DO PIX! */}
-          <span className="font-bold uppercase tracking-wide text-sm">
-            COBRE COM PIX
-          </span>
-        </button>
-      ) : null,
-    address:
-      profile.address &&
-      renderContactButton(
-        "address",
-        `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-          profile.address
-        )}`,
-        <MdLocationOn size={22} />,
-        "LOCALIZAÇÃO",
-        true
-      ),
-    website:
-      profile.website &&
-      renderContactButton(
-        "website",
-        profile.website,
-        <MdLanguage size={22} />,
-        "SITE",
-        true
-      ),
-    instagram:
-      profile.instagram &&
-      renderContactButton(
-        "instagram",
-        `https://instagram.com/${profile.instagram}`,
-        <FaInstagram size={22} />,
-        "INSTAGRAM",
-        true
-      ),
-    facebook:
-      profile.facebook &&
-      renderContactButton(
-        "facebook",
-        `https://facebook.com/${profile.facebook}`,
-        <FaFacebookF size={22} />,
-        "FACEBOOK",
-        true
-      ),
-    linkedin:
-      profile.linkedin &&
-      renderContactButton(
-        "linkedin",
-        `https://linkedin.com/in/${profile.linkedin}`,
-        <FaLinkedinIn size={22} />,
-        "LINKEDIN",
-        true
-      ),
-    twitter:
-      profile.twitter &&
-      renderContactButton(
-        "twitter",
-        `https://twitter.com/${profile.twitter}`,
-        <FaTwitter size={22} />,
-        "TWITTER",
-        true
-      ),
-    youtube:
-      profile.youtube &&
-      renderContactButton(
-        "youtube",
-        `https://youtube.com/@${profile.youtube}`,
-        <FaYoutube size={22} />,
-        "YOUTUBE",
-        true
-      ),
-    spotify:
-      profile.spotify &&
-      renderContactButton(
-        "spotify",
-        profile.spotify,
-        <FaSpotify size={22} />,
-        "SPOTIFY",
-        true
-      ),
-    google_reviews:
-      profile.google_reviews &&
-      renderContactButton(
-        "google_reviews",
-        profile.google_reviews,
-        <AiFillStar size={22} />,
-        "AVALIAÇÕES",
-        true
-      ),
+    email: profile.email && renderContactButton("email", `mailto:${profile.email}`, <MdEmail size={22} />, "E-MAIL"),
+    phone: profile.phone && renderContactButton("phone", `tel:${profile.phone}`, <MdPhone size={22} />, "TELEFONE"),
+    whatsapp: profile.whatsapp && renderContactButton(
+      "whatsapp",
+      `https://wa.me/${profile.whatsapp.replace(/\D/g, "")}`,
+      <FaWhatsapp size={22} />, "WHATSAPP", true
+    ),
+    pix: profile.pix_enabled && profile.pix_key ? (
+      <button
+        key="pix"
+        onClick={() => setPixModalOpen(true)}
+        className="flex items-center justify-center gap-3 p-4 rounded-xl transition-all hover:scale-105 shadow-lg w-full"
+        style={{
+          backgroundColor: itemColor,
+          color: textColor,
+          borderRadius: `${borderRadius}px`,
+          // ✅ OPACIDADE APLICADA
+          opacity: opacity,
+        }}
+      >
+        <FaPix size={22} />
+        <span className="font-bold uppercase tracking-wide text-sm">COBRE COM PIX</span>
+      </button>
+    ) : null,
+    address: profile.address && renderContactButton(
+      "address",
+      `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(profile.address)}`,
+      <MdLocationOn size={22} />, "LOCALIZAÇÃO", true
+    ),
+    website: profile.website && renderContactButton("website", profile.website, <MdLanguage size={22} />, "SITE", true),
+    instagram: profile.instagram && renderContactButton(
+      "instagram", `https://instagram.com/${profile.instagram}`, <FaInstagram size={22} />, "INSTAGRAM", true
+    ),
+    facebook: profile.facebook && renderContactButton(
+      "facebook", `https://facebook.com/${profile.facebook}`, <FaFacebookF size={22} />, "FACEBOOK", true
+    ),
+    linkedin: profile.linkedin && renderContactButton(
+      "linkedin", `https://linkedin.com/in/${profile.linkedin}`, <FaLinkedinIn size={22} />, "LINKEDIN", true
+    ),
+    twitter: profile.twitter && renderContactButton(
+      "twitter", `https://twitter.com/${profile.twitter}`, <FaTwitter size={22} />, "TWITTER", true
+    ),
+    youtube: profile.youtube && renderContactButton(
+      "youtube", `https://youtube.com/@${profile.youtube}`, <FaYoutube size={22} />, "YOUTUBE", true
+    ),
+    spotify: profile.spotify && renderContactButton(
+      "spotify", profile.spotify, <FaSpotify size={22} />, "SPOTIFY", true
+    ),
+    google_reviews: profile.google_reviews && renderContactButton(
+      "google_reviews", profile.google_reviews, <AiFillStar size={22} />, "AVALIAÇÕES", true
+    ),
   };
 
-  const orderedContacts = contactOrder
-    .map((key) => contactMethods[key])
-    .filter(Boolean);
-
   const hasIconOnlyContacts = contactOrder.some((key) => contactIconOnly[key]);
-
-  const iconOnlyContacts = contactOrder
-    .filter((key) => contactIconOnly[key])
-    .map((key) => contactMethods[key])
-    .filter(Boolean);
-
-  const fullContacts = contactOrder
-    .filter((key) => !contactIconOnly[key])
-    .map((key) => contactMethods[key])
-    .filter(Boolean);
-
-  let backgroundStyle: React.CSSProperties = {};
-
-  if (backgroundType === "gradient-custom" && gradientColor1 && gradientColor2) {
-    backgroundStyle.background = `linear-gradient(135deg, ${gradientColor1} 0%, ${gradientColor2} 100%)`;
-  } else if (backgroundType === "gradient" && selectedGradient) {
-    backgroundStyle.background = selectedGradient;
-  } else if (backgroundType === "image" && backgroundImage) {
-    backgroundStyle.backgroundImage = `url(${backgroundImage})`;
-    backgroundStyle.backgroundSize = "cover";
-    backgroundStyle.backgroundPosition = "center";
-    backgroundStyle.backgroundRepeat = "no-repeat";
-  } else {
-    backgroundStyle.backgroundColor = backgroundColor;
-  }
+  const iconOnlyContacts = contactOrder.filter((key) => contactIconOnly[key]).map((key) => contactMethods[key]).filter(Boolean);
+  const fullContacts = contactOrder.filter((key) => !contactIconOnly[key]).map((key) => contactMethods[key]).filter(Boolean);
 
   return (
     <div className="min-h-screen relative" style={backgroundStyle}>
-      {backgroundType === "image" && backgroundImage && blur && parseInt(blur) > 0 && (
+
+      {/* BLUR NA IMAGEM DE FUNDO */}
+      {backgroundType === "image" && backgroundImage && parseInt(blur) > 0 && (
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
@@ -364,46 +227,34 @@ export default function ProfilePage({ params }: ProfilePageProps) {
       )}
 
       <div className="max-w-md mx-auto px-6 py-12 relative z-10">
+
         {/* CARTÃO DIGITAL */}
         <DigitalCard profile={profile} />
 
-        {/* BOTÕES DE REDES SOCIAIS + PIX */}
-        {orderedContacts.length > 0 && (
+        {/* BOTÕES DE CONTATO */}
+        {(iconOnlyContacts.length > 0 || fullContacts.length > 0) && (
           <div className="mt-8 mb-12 space-y-4">
-           {hasIconOnlyContacts && (
-            <div className="flex justify-center w-full mb-4">
-              <div style={{
-                display: "flex",
-                flexWrap: "wrap",
-                justifyContent: "center",
-                alignItems: "center",
-                gap: "10px",
-                maxWidth: "220px",  // ← AJUSTE ESTE VALOR
-                margin: "0 auto"
-               }}>
-                {iconOnlyContacts}
+            {hasIconOnlyContacts && (
+              <div className="flex justify-center w-full mb-4">
+                <div style={{
+                  display: "flex", flexWrap: "wrap", justifyContent: "center",
+                  alignItems: "center", gap: "10px", maxWidth: "220px", margin: "0 auto"
+                }}>
+                  {iconOnlyContacts}
+                </div>
               </div>
-            </div>
-          )}
+            )}
             {fullContacts.length > 0 && (
               <div className="space-y-4">{fullContacts}</div>
             )}
           </div>
         )}
 
-        {/* CATÁLOGO DE PRODUTOS */}
+        {/* CATÁLOGO */}
         {profile.catalog && profile.catalog.length > 0 && (
           <div className="mt-8 mb-12">
-            <h3
-              className="text-center font-black uppercase text-2xl mb-6 tracking-wider"
-              style={{ color: textColor }}
-            >
-              
-            </h3>
-
             <div className="grid grid-cols-1 gap-6">
               {profile.catalog.map((product: any) => {
-                // DETERMINAR SE MOSTRA IMAGEM ACIMA OU ABAIXO
                 const showImageAbove = product.showImageAbove !== false;
                 const productImages = product.images || (product.image ? [product.image] : []);
 
@@ -414,74 +265,36 @@ export default function ProfilePage({ params }: ProfilePageProps) {
                     style={{
                       backgroundColor: itemColor,
                       borderRadius: `${borderRadius}px`,
+                      opacity: opacity, // ✅ OPACIDADE NOS CARDS
                     }}
                   >
-                    {/* IMAGEM ACIMA */}
                     {showImageAbove && productImages.length > 0 && (
-                      <div className="w-full">
-                        <ImageSlider
-                          images={productImages}
-                          alt={product.name}
-                          borderRadius={borderRadius}
-                        />
-                      </div>
+                      <ImageSlider images={productImages} alt={product.name} borderRadius={borderRadius} />
                     )}
-
-                    {/* INFORMAÇÕES DO PRODUTO */}
                     <div className="p-5 space-y-3">
-                      <h4
-                        className="font-bold text-lg uppercase tracking-wide"
-                        style={{ color: textColor }}
-                      >
+                      <h4 className="font-bold text-lg uppercase tracking-wide" style={{ color: textColor }}>
                         {product.name}
                       </h4>
-
                       {product.description && (
-                        <p
-                          className="text-sm opacity-90"
-                          style={{ color: textColor }}
-                        >
-                          {product.description}
-                        </p>
+                        <p className="text-sm opacity-90" style={{ color: textColor }}>{product.description}</p>
                       )}
-
                       <div className="flex items-center justify-between">
-                        <span
-                          className="text-2xl font-black"
-                          style={{ color: textColor }}
-                        >
-                          {new Intl.NumberFormat("pt-BR", {
-                            style: "currency",
-                            currency: "BRL",
-                          }).format(product.price || 0)}
+                        <span className="text-2xl font-black" style={{ color: textColor }}>
+                          {new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(product.price || 0)}
                         </span>
-
                         {product.link && (
                           <a
-                            href={product.link}
-                            target="_blank"
-                            rel="noopener noreferrer"
+                            href={product.link} target="_blank" rel="noopener noreferrer"
                             className="px-6 py-2 rounded-lg font-bold uppercase text-sm transition-all hover:scale-105 shadow-lg"
-                            style={{
-                              backgroundColor: textColor,
-                              color: itemColor,
-                            }}
+                            style={{ backgroundColor: textColor, color: itemColor }}
                           >
                             {product.buttonText || "COMPRAR"}
                           </a>
                         )}
                       </div>
                     </div>
-
-                    {/* IMAGEM ABAIXO */}
                     {!showImageAbove && productImages.length > 0 && (
-                      <div className="w-full">
-                        <ImageSlider
-                          images={productImages}
-                          alt={product.name}
-                          borderRadius={borderRadius}
-                        />
-                      </div>
+                      <ImageSlider images={productImages} alt={product.name} borderRadius={borderRadius} />
                     )}
                   </div>
                 );
@@ -490,8 +303,8 @@ export default function ProfilePage({ params }: ProfilePageProps) {
           </div>
         )}
 
-       {/* FORMULÁRIO DE CONTATO */}
-        {profile.contactform && profile.contactform.enabled && (
+        {/* FORMULÁRIO DE CONTATO */}
+        {profile.contactform?.enabled && (
           <div
             className="overflow-hidden shadow-lg mb-12"
             style={{
@@ -499,41 +312,30 @@ export default function ProfilePage({ params }: ProfilePageProps) {
               borderRadius: `${borderRadius}px`,
               border: `2px solid ${textColor}40`,
               padding: "24px",
+              opacity: opacity, // ✅ OPACIDADE NO FORMULÁRIO
             }}
-           >
-            <h3
-              className="text-center font-black uppercase text-lg mb-6 tracking-wider"
-              style={{ color: textColor }}
-            >
+          >
+            <h3 className="text-center font-black uppercase text-lg mb-6 tracking-wider" style={{ color: textColor }}>
               {profile.contactform.title || "ENTRE EM CONTATO"}
             </h3>
-
             <ContactFormComponent profile={profile} />
           </div>
         )}
       </div>
 
-       {/* RODAPÉ - LOGO INTEGRETY */}
-        <div className="mt-2 pb-8 flex justify-center px-4">
-          <a 
-            href="/" 
-            className="block transition-all hover:scale-105"
-            title="INTEGRETY TAG"
-           >
-            <img 
-              src="/integrety.png" 
-              alt="INTEGRETY" 
-              width={991}
-              height={131}
-              className="w-auto h-auto opacity-80 hover:opacity-100"
-              style={{ maxWidth: '400px' }}
-            />
-          </a>
-        </div>
-       
-      
+      {/* RODAPÉ */}
+      <div className="mt-2 pb-8 flex justify-center px-4">
+        <a href="/" className="block transition-all hover:scale-105" title="INTEGRETY TAG">
+          <img
+            src="/integrety.png" alt="INTEGRETY" width={991} height={131}
+            className="w-auto h-auto opacity-80 hover:opacity-100"
+            style={{ maxWidth: "400px" }}
+          />
+        </a>
+      </div>
+
       {/* MODAL PIX */}
-      {profile && profile.pix_enabled && profile.pix_key && (
+      {profile.pix_enabled && profile.pix_key && (
         <PixModal
           isOpen={pixModalOpen}
           onClose={() => setPixModalOpen(false)}
@@ -544,6 +346,6 @@ export default function ProfilePage({ params }: ProfilePageProps) {
           avatarUrl={profile.avatar}
         />
       )}
-          </div>
+    </div>
   );
 }
