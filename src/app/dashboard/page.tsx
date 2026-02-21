@@ -130,34 +130,7 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-black text-white">
 
-      {/* NAVBAR */}
-      <nav className="sticky top-0 z-50 border-b border-white/5 bg-black/80 backdrop-blur-md">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between gap-3">
-          
-          {/* LOGO */}
-          <span className="text-base sm:text-lg font-black uppercase tracking-tighter flex-shrink-0">
-            INTEGRETY<span className="text-[#1ccec8]">TAG</span>
-          </span>
-
-          {/* AÇÕES */}
-          <div className="flex items-center gap-2 sm:gap-3">
-            <Link
-              href={`/p/${profile.username}`}
-              target="_blank"
-              className="px-3 py-2 sm:px-4 sm:py-2 text-xs sm:text-sm bg-[#1ccec8]/10 hover:bg-[#1ccec8]/20 text-[#1ccec8] border border-[#1ccec8]/30 rounded-lg transition font-semibold whitespace-nowrap"
-            >
-              Ver Perfil
-            </Link>
-            <button
-              onClick={handleLogout}
-              className="p-2 sm:px-4 sm:py-2 text-xs sm:text-sm bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white border border-white/10 rounded-lg transition flex items-center gap-2"
-            >
-              <LogOut className="w-4 h-4" />
-              <span className="hidden sm:inline">Sair</span>
-            </button>
-          </div>
-        </div>
-      </nav>
+     
 
       {/* CONTEÚDO PRINCIPAL */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
