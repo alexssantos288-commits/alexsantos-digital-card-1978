@@ -18,6 +18,21 @@ interface ProfilePageProps {
   params: { username: string };
 }
 
+// ✅ CONVERTE HEX → RGBA COM OPACIDADE
+function hexToRgba(hex: string, alpha: number): string {
+  // Se já for rgba ou rgb, retorna como está
+  if (hex.startsWith("rgb")) return hex;
+  
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  if (!result) return hex;
+  
+  const r = parseInt(result[1], 16);
+  const g = parseInt(result[2], 16);
+  const b = parseInt(result[3], 16);
+  
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+
 export default function ProfilePage({ params }: ProfilePageProps) {
   const { username } = params;
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -61,8 +76,11 @@ export default function ProfilePage({ params }: ProfilePageProps) {
   const gradientColor2 = theme.gradientColor2;
   const blur = theme.blur || "0";
 
-  // ✅ OPACIDADE - aplicada APENAS nos botões de ação
+  // ✅ OPACIDADE como número 0-1
   const opacity = theme.opacity ? Number(theme.opacity) / 100 : 1;
+
+  // ✅ COR DO BOTÃO COM OPACIDADE APLICADA NO FUNDO (texto fica nítido)
+  const itemColorWithOpacity = hexToRgba(itemColor, opacity);
 
   // ✅ BACKGROUND
   let backgroundStyle: React.CSSProperties = {};
@@ -96,7 +114,6 @@ export default function ProfilePage({ params }: ProfilePageProps) {
   const contactActive = profile.contact_active || {};
   const contactIconOnly = profile.contact_icon_only || {};
 
-  // ✅ OPACIDADE APENAS NOS BOTÕES DE AÇÃO
   const renderContactButton = (
     id: string,
     href: string,
@@ -117,12 +134,12 @@ export default function ProfilePage({ params }: ProfilePageProps) {
           rel={external ? "noopener noreferrer" : undefined}
           className="flex items-center justify-center transition-all hover:scale-110 shadow-lg"
           style={{
-            backgroundColor: itemColor,
+            // ✅ FUNDO COM OPACIDADE, TEXTO NÍTIDO
+            backgroundColor: itemColorWithOpacity,
             color: textColor,
             borderRadius: `${parseInt(borderRadius) / 3}px`,
             width: "48px",
             height: "48px",
-            opacity: opacity, // ✅ OPACIDADE NO BOTÃO
           }}
           title={label}
         >
@@ -139,10 +156,10 @@ export default function ProfilePage({ params }: ProfilePageProps) {
         rel={external ? "noopener noreferrer" : undefined}
         className="flex items-center justify-center gap-3 p-4 transition-all hover:scale-105 shadow-lg w-full"
         style={{
-          backgroundColor: itemColor,
+          // ✅ FUNDO COM OPACIDADE, TEXTO NÍTIDO
+          backgroundColor: itemColorWithOpacity,
           color: textColor,
           borderRadius: `${borderRadius}px`,
-          opacity: opacity, // ✅ OPACIDADE NO BOTÃO
         }}
       >
         {icon}
@@ -159,25 +176,22 @@ export default function ProfilePage({ params }: ProfilePageProps) {
       `https://wa.me/${profile.whatsapp.replace(/\D/g, "")}`,
       <FaWhatsapp size={22} />, "WHATSAPP", true
     ),
-
-    // ✅ OPACIDADE NO BOTÃO PIX
     pix: profile.pix_enabled && profile.pix_key ? (
       <button
         key="pix"
         onClick={() => setPixModalOpen(true)}
         className="flex items-center justify-center gap-3 p-4 transition-all hover:scale-105 shadow-lg w-full"
         style={{
-          backgroundColor: itemColor,
+          // ✅ FUNDO COM OPACIDADE, TEXTO NÍTIDO
+          backgroundColor: itemColorWithOpacity,
           color: textColor,
           borderRadius: `${borderRadius}px`,
-          opacity: opacity, // ✅ OPACIDADE NO BOTÃO PIX
         }}
       >
         <FaPix size={22} />
         <span className="font-bold uppercase tracking-wide text-sm">COBRE COM PIX</span>
       </button>
     ) : null,
-
     address: profile.address && renderContactButton(
       "address",
       `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(profile.address)}`,
@@ -249,7 +263,7 @@ export default function ProfilePage({ params }: ProfilePageProps) {
           </div>
         )}
 
-        {/* CATÁLOGO - SEM OPACIDADE */}
+        {/* CATÁLOGO */}
         {profile.catalog && profile.catalog.length > 0 && (
           <div className="mt-8 mb-12">
             <div className="grid grid-cols-1 gap-6">
@@ -264,7 +278,6 @@ export default function ProfilePage({ params }: ProfilePageProps) {
                     style={{
                       backgroundColor: itemColor,
                       borderRadius: `${borderRadius}px`,
-                      // ✅ SEM OPACIDADE NO CATÁLOGO
                     }}
                   >
                     {showImageAbove && productImages.length > 0 && (
@@ -302,16 +315,16 @@ export default function ProfilePage({ params }: ProfilePageProps) {
           </div>
         )}
 
-        {/* FORMULÁRIO - SEM OPACIDADE, BORDA COM OPACIDADE HEX */}
+        {/* FORMULÁRIO */}
         {profile.contactform?.enabled && (
           <div
             className="overflow-hidden shadow-lg mb-12"
             style={{
-              backgroundColor: itemColor,
+              // ✅ FUNDO DO FORMULÁRIO TAMBÉM COM OPACIDADE
+              backgroundColor: itemColorWithOpacity,
               borderRadius: `${borderRadius}px`,
-              border: `2px solid ${textColor}40`, // ✅ BORDA COM OPACIDADE HEX
+              border: `2px solid ${hexToRgba(textColor, opacity)}`,
               padding: "24px",
-              // ✅ SEM OPACIDADE NO CONTAINER
             }}
           >
             <h3 className="text-center font-black uppercase text-lg mb-6 tracking-wider" style={{ color: textColor }}>

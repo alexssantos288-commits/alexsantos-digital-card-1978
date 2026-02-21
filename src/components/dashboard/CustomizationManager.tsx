@@ -188,7 +188,8 @@ export function CustomizationManager({ profile, onUpdate }: CustomizationManager
               type="color"
               value={formData.itemColor}
               onChange={(e) => handleChange("itemColor", e.target.value)}
-              className="w-full h-10 rounded-lg cursor-pointer border border-white/10"
+              className="w-full h-10 rounded-lg cursor-pointer"
+              style={{ background: "transparent", border: "none" }}
             />
           </div>
 
@@ -225,7 +226,8 @@ export function CustomizationManager({ profile, onUpdate }: CustomizationManager
               type="color"
               value={formData.textColor}
               onChange={(e) => handleChange("textColor", e.target.value)}
-              className="w-full h-10 rounded-lg cursor-pointer border border-white/10"
+              className="w-full h-10 rounded-lg cursor-pointer"
+              style={{ background: "transparent", border: "none" }}
             />
           </div>
 
@@ -279,7 +281,8 @@ export function CustomizationManager({ profile, onUpdate }: CustomizationManager
                     type="color"
                     value={formData.gradientColor1}
                     onChange={(e) => handleChange("gradientColor1", e.target.value)}
-                    className="w-full h-10 rounded-lg cursor-pointer border border-white/10"
+                    className="w-full h-10 rounded-lg cursor-pointer"
+                    style={{ background: "transparent", border: "none" }}
                   />
                 </div>
                 <div className="flex-1">
@@ -288,7 +291,8 @@ export function CustomizationManager({ profile, onUpdate }: CustomizationManager
                     type="color"
                     value={formData.gradientColor2}
                     onChange={(e) => handleChange("gradientColor2", e.target.value)}
-                    className="w-full h-10 rounded-lg cursor-pointer border border-white/10"
+                    className="w-full h-10 rounded-lg cursor-pointer"
+                    style={{ background: "transparent", border: "none" }}
                   />
                 </div>
               </div>
