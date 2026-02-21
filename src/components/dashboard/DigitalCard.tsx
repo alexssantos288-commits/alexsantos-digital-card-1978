@@ -8,6 +8,13 @@ interface DigitalCardProps {
   profile: Profile;
 }
 
+function hexToRgba(hex: string, alpha: number): string {
+  if (hex.startsWith("rgb")) return hex;
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  if (!result) return hex;
+  return `rgba(${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}, ${alpha})`;
+}
+
 export function DigitalCard({ profile }: DigitalCardProps) {
   const handleShare = async () => {
     const url = `${window.location.origin}/${profile.username}`;
@@ -70,6 +77,8 @@ END:VCARD`;
   const textColor = theme.textColor || "#ffffff";
   const backgroundColor = theme.backgroundColor || "#000000";
   const borderRadius = theme.borderRadius || "24";
+  const opacity = theme.opacity ? Number(theme.opacity) / 100 : 1;
+  const itemColorWithOpacity = hexToRgba(itemColor, opacity);
   
   // Verificar se PIX está habilitado (FORÇAR BOOLEAN)
   const pixEnabled = !!(profile.pix_enabled && profile.pix_key);
@@ -87,7 +96,7 @@ END:VCARD`;
     <div 
       className="relative overflow-visible shadow-2xl"
       style={{ 
-        backgroundColor: itemColor,
+        backgroundColor: itemColorWithOpacity, // ← aqui
         borderRadius: `${borderRadius}px`,
         padding: '32px 24px',
         paddingTop: '80px',
@@ -111,7 +120,9 @@ END:VCARD`;
           ) : (
             <div 
               className="w-full h-full flex items-center justify-center text-4xl font-black"
-              style={{ backgroundColor: itemColor, color: textColor }}
+              style={{
+                backgroundColor: itemColorWithOpacity, // ← aqui
+              }}
             >
               {profile.name.charAt(0).toUpperCase()}
             </div>
