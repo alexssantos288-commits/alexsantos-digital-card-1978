@@ -323,7 +323,7 @@ export default function ProfilePage({ params }: ProfilePageProps) {
               // ✅ FUNDO DO FORMULÁRIO TAMBÉM COM OPACIDADE
               backgroundColor: itemColorWithOpacity,
               borderRadius: `${borderRadius}px`,
-              border: `2px solid ${hexToRgba(textColor, opacity)}`,
+              border: `2px solid ${itemColorWithOpacity}`,
               padding: "24px",
             }}
           >
