@@ -5,8 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Navbar } from '@/components/Navbar';
 import {
-  CreditCard, Smartphone, Monitor, QrCode, Nfc,
-  User, Link as LinkIcon, Circle, Palette, MapPin,
+  CreditCard,
   Zap, ShieldCheck, Check
 } from 'lucide-react';
 
@@ -20,7 +19,7 @@ const produtos = [
     badge: null,
     desconto: null,
     precoOriginal: null,
-    imagem: "https://generated-images.adapta.one/alexharmonia2016%40gmail.com/019b7f4e-b2b4-74bc-a419-7699335fa216/2026-02-23T14-50-17-830Z_A_premium_black_NFC_business_card_product_photo_s.png",
+    imagem: "/cartao.png",
     features: [
       { text: "Cartão NFC em PVC Premium preto" },
       { text: "QR Code 100% personalizado" },
@@ -38,7 +37,7 @@ const produtos = [
     badge: null,
     desconto: null,
     precoOriginal: null,
-    imagem: "https://generated-images.adapta.one/alexharmonia2016%40gmail.com/019b7f4e-b2b4-74bc-a419-7699335fa216/2026-02-23T14-50-30-311Z_A_premium_circular_NFC_sticker_tag_for_smartphone.png",
+    imagem: "/tag.png",
     features: [
       { text: "Tag circular NFC para celular" },
       { text: "Design exclusivo padrão wave" },
@@ -56,7 +55,7 @@ const produtos = [
     highlight: true,
     badge: "MAIS VENDIDO",
     desconto: "15% OFF",
-    imagem: "https://generated-images.adapta.one/alexharmonia2016%40gmail.com/019b7f4e-b2b4-74bc-a419-7699335fa216/2026-02-23T14-50-43-488Z_A_premium_luxury_NFC_display_stand_for_desk_or_cou.png",
+    imagem: "/display.png",
     features: [
       { text: "Display NFC de mesa premium" },
       { text: "Acabamento dourado nas bordas" },
@@ -126,14 +125,12 @@ export default function ProdutosPage() {
                   className="object-cover transition-transform duration-700 group-hover:scale-105"
                   sizes="(max-width: 768px) 100vw, 33vw"
                 />
-                {/* OVERLAY GRADIENTE */}
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent" />
               </div>
 
               {/* CONTEÚDO */}
               <div className="flex flex-col flex-1 p-8">
 
-                {/* NOME */}
                 <div className="mb-5">
                   <p className="text-xs font-black uppercase tracking-[0.3em] text-[#1ccec8] mb-1">
                     {produto.nome}
@@ -143,7 +140,6 @@ export default function ProdutosPage() {
                   </h2>
                 </div>
 
-                {/* PREÇO */}
                 <div className="flex items-end gap-2 mb-7">
                   <div>
                     {produto.precoOriginal && (
@@ -161,7 +157,6 @@ export default function ProdutosPage() {
                   </div>
                 </div>
 
-                {/* FEATURES */}
                 <ul className="space-y-3 mb-8 flex-1">
                   {produto.features.map((feature, idx) => (
                     <li key={idx} className="flex items-center gap-3 text-sm text-gray-300">
@@ -173,7 +168,6 @@ export default function ProdutosPage() {
                   ))}
                 </ul>
 
-                {/* BOTÃO */}
                 <Link href={`/checkout?produto=${produto.id}`}>
                   <button
                     className={`w-full py-4 rounded-2xl font-black uppercase tracking-widest text-sm transition-all hover:scale-[1.02] ${
