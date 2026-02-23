@@ -20,6 +20,9 @@ export const Navbar = () => {
           <Link href="#recursos" className="text-sm font-bold uppercase tracking-wider hover:text-[#1ccec8] transition">
             Recursos
           </Link>
+          <Link href="/produtos" className="text-sm font-bold uppercase tracking-wider hover:text-[#1ccec8] transition">
+            Produtos
+          </Link>
           <Link
             href="/auth/login"
             className="bg-[#1ccec8] hover:bg-[#18b5b0] text-black text-xs font-black uppercase tracking-wider px-6 py-3 rounded-full transition-all hover:scale-105"
@@ -48,6 +51,13 @@ export const Navbar = () => {
             onClick={() => setMenuOpen(false)}
           >
             Recursos
+          </Link>
+          <Link
+            href="/produtos"
+            className="text-sm font-bold uppercase tracking-wider hover:text-[#1ccec8] transition"
+            onClick={() => setMenuOpen(false)}
+          >
+            Produtos
           </Link>
           <Link
             href="/auth/login"
