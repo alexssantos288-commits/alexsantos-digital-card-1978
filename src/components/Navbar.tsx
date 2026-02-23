@@ -3,6 +3,13 @@
 import Link from "next/link";
 import { useState } from "react";
 
+const links = [
+  { href: "#recursos", label: "Recursos" },
+  { href: "/produtos", label: "Produtos" },
+  { href: "/contato", label: "Fale Conosco" },
+  { href: "/sobre", label: "Sobre Nós" },
+];
+
 export const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -17,12 +24,15 @@ export const Navbar = () => {
 
         {/* DESKTOP */}
         <div className="hidden md:flex items-center gap-6">
-          <Link href="#recursos" className="text-sm font-bold uppercase tracking-wider hover:text-[#1ccec8] transition">
-            Recursos
-          </Link>
-          <Link href="/produtos" className="text-sm font-bold uppercase tracking-wider hover:text-[#1ccec8] transition">
-            Produtos
-          </Link>
+          {links.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className="text-sm font-bold uppercase tracking-wider hover:text-[#1ccec8] transition"
+            >
+              {link.label}
+            </Link>
+          ))}
           <Link
             href="/auth/login"
             className="bg-[#1ccec8] hover:bg-[#18b5b0] text-black text-xs font-black uppercase tracking-wider px-6 py-3 rounded-full transition-all hover:scale-105"
@@ -45,20 +55,16 @@ export const Navbar = () => {
       {/* MOBILE MENU */}
       {menuOpen && (
         <div className="md:hidden bg-black/95 border-t border-white/5 px-4 py-4 flex flex-col gap-4">
-          <Link
-            href="#recursos"
-            className="text-sm font-bold uppercase tracking-wider hover:text-[#1ccec8] transition"
-            onClick={() => setMenuOpen(false)}
-          >
-            Recursos
-          </Link>
-          <Link
-            href="/produtos"
-            className="text-sm font-bold uppercase tracking-wider hover:text-[#1ccec8] transition"
-            onClick={() => setMenuOpen(false)}
-          >
-            Produtos
-          </Link>
+          {links.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className="text-sm font-bold uppercase tracking-wider hover:text-[#1ccec8] transition"
+              onClick={() => setMenuOpen(false)}
+            >
+              {link.label}
+            </Link>
+          ))}
           <Link
             href="/auth/login"
             className="bg-[#1ccec8] text-black text-xs font-black uppercase tracking-wider px-6 py-3 rounded-full text-center"
