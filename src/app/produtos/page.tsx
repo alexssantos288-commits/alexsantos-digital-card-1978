@@ -1,13 +1,9 @@
 "use client";
 
 import React from 'react';
-import Link from 'next/link';
 import Image from 'next/image';
 import { Navbar } from '@/components/Navbar';
-import {
-  CreditCard,
-  Zap, ShieldCheck, Check
-} from 'lucide-react';
+import { CreditCard, Zap, ShieldCheck, Check } from 'lucide-react';
 
 const produtos = [
   {
@@ -20,6 +16,7 @@ const produtos = [
     desconto: null,
     precoOriginal: null,
     imagem: "/cartao.png",
+    link: "https://pay.kiwify.com.br/ofCNmg9",
     features: [
       { text: "Cartão NFC em PVC Premium preto" },
       { text: "QR Code 100% personalizado" },
@@ -38,6 +35,7 @@ const produtos = [
     desconto: null,
     precoOriginal: null,
     imagem: "/tag.png",
+    link: "https://pay.kiwify.com.br/kjvFO27",
     features: [
       { text: "Tag circular NFC para celular" },
       { text: "Design exclusivo padrão wave" },
@@ -56,6 +54,7 @@ const produtos = [
     badge: "MAIS VENDIDO",
     desconto: "15% OFF",
     imagem: "/display.png",
+    link: "https://pay.kiwify.com.br/d4BBZqg",
     features: [
       { text: "Display NFC de mesa premium" },
       { text: "Acabamento dourado nas bordas" },
@@ -168,7 +167,8 @@ export default function ProdutosPage() {
                   ))}
                 </ul>
 
-                <Link href={`/checkout?produto=${produto.id}`}>
+                {/* BOTÃO → KIWIFY */}
+                <a href={produto.link} target="_blank" rel="noopener noreferrer">
                   <button
                     className={`w-full py-4 rounded-2xl font-black uppercase tracking-widest text-sm transition-all hover:scale-[1.02] ${
                       produto.highlight
@@ -178,7 +178,7 @@ export default function ProdutosPage() {
                   >
                     ADQUIRIR AGORA
                   </button>
-                </Link>
+                </a>
               </div>
             </div>
           ))}
