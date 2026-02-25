@@ -40,11 +40,33 @@ export default function ProfilePage({ params }: ProfilePageProps) {
 
   useEffect(() => {
     const fetchProfile = async () => {
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("username", username)
-        .single();
+      // ✅ TROCA POR .maybeSingle()
+          const { data, error } = await supabase
+          .from("profiles")
+          .select("*")
+          .eq("username", username)
+          .maybeSingle();  // ← CORRETO
+
+
+          const fetchProfile = async () => {
+            const { data, error } = await supabase
+              .from("profiles")
+              .select("*")
+              .eq("username", username)
+              .maybeSingle();
+          
+            if (error) {
+              console.error("Erro ao buscar perfil:", error);
+              return;
+            }
+          
+            if (!data) {
+              console.warn("Perfil não encontrado para:", username);
+              return;
+            }
+          
+            setProfile(data);
+          };
 
       if (error) {
         console.error("Erro ao buscar perfil:", error);
