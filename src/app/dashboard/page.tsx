@@ -143,25 +143,7 @@ export default function DashboardPage() {
       INTEGRETY<span className="text-[#1ccec8]">TAG</span>
     </Link>
 
-    {/* BOTÕES */}
-    <div className="flex items-center gap-2 shrink-0">
-      <Link
-        href={`/p/${profile.username}`}
-        target="_blank"
-        className="flex items-center gap-1 px-3 py-2 rounded-lg border border-[#1ccec8] text-[#1ccec8] text-xs font-bold uppercase tracking-wide hover:bg-[#1ccec8]/10 transition whitespace-nowrap"
-      >
-        <Share2 className="w-3 h-3 shrink-0" />
-        <span>Ver Perfil</span>
-      </Link>
-
-      <button
-        onClick={handleLogout}
-        className="flex items-center gap-1 px-3 py-2 rounded-lg border border-red-500/40 text-red-400 text-xs font-bold uppercase tracking-wide hover:bg-red-500/10 transition whitespace-nowrap"
-      >
-        <LogOut className="w-3 h-3 shrink-0" />
-        <span>Sair</span>
-      </button>
-    </div>
+    
 
   </div>
 </div>
