@@ -45,18 +45,18 @@ export default function Home() {
           </a>
 
               {/* VIDEO */}
-              <div className="w-full max-w-3xl mx-auto mb-12 sm:mb-20 px-2">
-            <div className="relative rounded-[2rem] overflow-hidden border border-white/10 shadow-[0_0_60px_rgba(28,206,200,0.15)]">
-              <video
-                src="/video.mp4"
-                autoPlay
-                muted
-                loop
-                playsInline
-                controls
-                className="w-full h-auto rounded-[2rem]"
-              />
-            </div>
+        <div className="w-full max-w-xl mx-auto mb-12 sm:mb-20 px-2">
+          <div className="relative rounded-[2rem] overflow-hidden border border-white/10 shadow-[0_0_60px_rgba(28,206,200,0.15)]">
+            <video
+              src="/video.mp4"
+              autoPlay
+              muted
+              loop
+              playsInline
+              controls
+              className="w-full h-auto rounded-[2rem]"
+            />
+          </div>
           </div>
 
           {/* SLIDER MARQUEE */}

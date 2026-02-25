@@ -101,19 +101,19 @@ export default function ProdutosPage() {
                   : "bg-[#0a0a0a] border-white/5 hover:border-[#1ccec8]/30 hover:shadow-[0_0_40px_rgba(28,206,200,0.08)]"
               }`}
             >
-              {/* BADGE MAIS VENDIDO */}
+              {/* BADGE MAIS VENDIDO 
               {produto.badge && (
                 <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10 bg-[#1ccec8] text-black text-[10px] font-black uppercase tracking-widest px-5 py-1.5 rounded-full whitespace-nowrap">
                   ⭐ {produto.badge}
                 </div>
-              )}
+              )}*/}
 
-              {/* BADGE DESCONTO */}
+              {/* BADGE DESCONTO 
               {produto.desconto && (
                 <div className="absolute top-4 right-4 z-10 bg-green-500 text-black text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-full">
                   {produto.desconto}
                 </div>
-              )}
+              )}*/}
 
               {/* IMAGEM DO PRODUTO */}
               <div className="relative w-full h-56 overflow-hidden rounded-t-[2rem] bg-[#050505]">
