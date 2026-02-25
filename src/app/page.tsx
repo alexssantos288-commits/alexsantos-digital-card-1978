@@ -5,7 +5,7 @@ import { Navbar } from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
 import {
   Palette, Link2, QrCode, ShoppingBag, FileText, BarChart3,
-  Nfc, Wifi, WifiOff, ExternalLink, Wallet, MessageCircle, FileDown,
+  Nfc, WifiOff, FileDown,
 } from "lucide-react";
 
 // ─── SEÇÃO: POSSIBILIDADES ───────────────────────────
@@ -87,30 +87,6 @@ const compartilhar = [
     imagem: "/share-offline.png",
   },
   {
-    id: "link",
-    icone: ExternalLink,
-    label: "Link Personalizado",
-    titulo: "Link Personalizado",
-    descricao: "Compartilhe o link do seu perfil em qualquer lugar — redes sociais, e-mail, WhatsApp ou onde quiser. Seu perfil sempre acessível com um clique.",
-    imagem: "/share-link.png",
-  },
-  {
-    id: "wallet",
-    icone: Wallet,
-    label: "Wallet",
-    titulo: "Wallet",
-    descricao: "Adicione seu perfil à carteira digital do iPhone ou Android. Acesse seu cartão digital de forma instantânea, mesmo sem abrir nenhum aplicativo.",
-    imagem: "/share-wallet.png",
-  },
-  {
-    id: "whats",
-    icone: MessageCircle,
-    label: "WhatsApp Direto",
-    titulo: "WhatsApp Direto",
-    descricao: "Envie seu perfil diretamente pelo WhatsApp com um clique. Seus contatos recebem um link bonito e funcional para acessar todas as suas informações.",
-    imagem: "/share-whats.png",
-  },
-  {
     id: "pdf",
     icone: FileDown,
     label: "PDF",
@@ -182,8 +158,8 @@ export default function Home() {
         <section className="max-w-6xl mx-auto px-4 sm:px-6 pb-20">
           <div className="text-center mb-12">
             <h2 className="text-3xl sm:text-5xl font-black uppercase tracking-tighter leading-none mb-4">
-              UMA INFINIDADE DE <br />
-              <span className="text-[#1ccec8]">POSSIBILIDADES</span>
+              OPÇÕES DE MUDANÇA <br />
+              <span className="text-[#1ccec8]">NO PERFIL</span>
             </h2>
             <p className="text-gray-400 text-base">Interaja com os botões abaixo:</p>
           </div>
@@ -261,7 +237,7 @@ export default function Home() {
 
           <div className="text-center mb-10">
             <h2 className="text-3xl sm:text-5xl font-black uppercase tracking-tighter leading-none mb-3">
-              OPÇÕES DE  <span className="text-[#1ccec8]">COMPARTILHAMENTO</span>
+              OPÇÕES PARA  <span className="text-[#1ccec8]">COMPARTILHAR</span>
             </h2>
             <p className="text-gray-400 text-sm sm:text-base">
               Interaja com os botões abaixo:
