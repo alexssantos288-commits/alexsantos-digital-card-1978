@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { LogOut, User, Wifi } from "lucide-react";
+import { LogOut, User,} from "lucide-react";
 
 
 export default function DashboardLayout({
