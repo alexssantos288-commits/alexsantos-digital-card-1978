@@ -59,42 +59,36 @@ export default function LandingPage() {
         <section id="recursos" className="max-w-7xl mx-auto px-4 sm:px-6 py-16 sm:py-24 lg:py-32">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
             
-            {/* CARD 1 */}
             <div className="p-6 sm:p-10 rounded-[2rem] bg-[#0a0a0a] border border-white/5 hover:border-[#1ccec8]/30 transition-all group">
               <Smartphone className="w-8 h-8 sm:w-10 sm:h-10 text-[#1ccec8] mb-4 sm:mb-6 group-hover:scale-110 transition-transform" />
               <h3 className="text-lg sm:text-xl font-black uppercase tracking-tighter mb-2 sm:mb-3">Mobile First</h3>
               <p className="text-gray-500 text-sm leading-relaxed">Design otimizado para todos os dispositivos.</p>
             </div>
 
-            {/* CARD 2 */}
             <div className="p-6 sm:p-10 rounded-[2rem] bg-[#0a0a0a] border border-white/5 hover:border-[#1ccec8]/30 transition-all group">
               <Palette className="w-8 h-8 sm:w-10 sm:h-10 text-[#1ccec8] mb-4 sm:mb-6 group-hover:scale-110 transition-transform" />
               <h3 className="text-lg sm:text-xl font-black uppercase tracking-tighter mb-2 sm:mb-3">Personalização</h3>
               <p className="text-gray-500 text-sm leading-relaxed">Cores, fontes e layouts com a sua cara.</p>
             </div>
 
-            {/* CARD 3 */}
             <div className="p-6 sm:p-10 rounded-[2rem] bg-[#0a0a0a] border border-white/5 hover:border-[#1ccec8]/30 transition-all group">
               <Share2 className="w-8 h-8 sm:w-10 sm:h-10 text-[#1ccec8] mb-4 sm:mb-6 group-hover:scale-110 transition-transform" />
               <h3 className="text-lg sm:text-xl font-black uppercase tracking-tighter mb-2 sm:mb-3">Compartilhe Fácil</h3>
               <p className="text-gray-500 text-sm leading-relaxed">NFC, QR Code ou link direto.</p>
             </div>
 
-            {/* CARD 4 */}
             <div className="p-6 sm:p-10 rounded-[2rem] bg-[#0a0a0a] border border-white/5 hover:border-[#1ccec8]/30 transition-all group">
               <Zap className="w-8 h-8 sm:w-10 sm:h-10 text-[#1ccec8] mb-4 sm:mb-6 group-hover:scale-110 transition-transform" />
               <h3 className="text-lg sm:text-xl font-black uppercase tracking-tighter mb-2 sm:mb-3">Atualização Real</h3>
               <p className="text-gray-500 text-sm leading-relaxed">Mudou os dados? Atualize em segundos.</p>
             </div>
 
-            {/* CARD 5 */}
             <div className="p-6 sm:p-10 rounded-[2rem] bg-[#0a0a0a] border border-white/5 hover:border-[#1ccec8]/30 transition-all group">
               <ShieldCheck className="w-8 h-8 sm:w-10 sm:h-10 text-[#1ccec8] mb-4 sm:mb-6 group-hover:scale-110 transition-transform" />
               <h3 className="text-lg sm:text-xl font-black uppercase tracking-tighter mb-2 sm:mb-3">Seguro e Privado</h3>
               <p className="text-gray-500 text-sm leading-relaxed">Você controla quem vê suas informações.</p>
             </div>
 
-            {/* CARD 6 */}
             <div className="p-6 sm:p-10 rounded-[2rem] bg-[#0a0a0a] border border-white/5 hover:border-[#1ccec8]/30 transition-all group">
               <BarChart3 className="w-8 h-8 sm:w-10 sm:h-10 text-[#1ccec8] mb-4 sm:mb-6 group-hover:scale-110 transition-transform" />
               <h3 className="text-lg sm:text-xl font-black uppercase tracking-tighter mb-2 sm:mb-3">Analytics</h3>
