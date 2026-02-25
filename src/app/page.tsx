@@ -3,8 +3,12 @@
 import { useState } from "react";
 import { Navbar } from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
-import { Palette, Link2, QrCode, ShoppingBag, FileText, BarChart3 } from "lucide-react";
+import {
+  Palette, Link2, QrCode, ShoppingBag, FileText, BarChart3,
+  Nfc, Wifi, WifiOff, ExternalLink, Wallet, MessageCircle, FileDown,
+} from "lucide-react";
 
+// ─── SEÇÃO: POSSIBILIDADES ───────────────────────────
 const funcionalidades = [
   {
     id: "personalizacao",
@@ -56,8 +60,69 @@ const funcionalidades = [
   },
 ];
 
+// ─── SEÇÃO: FORMAS DE COMPARTILHAR ──────────────────
+const compartilhar = [
+  {
+    id: "aproximacao",
+    icone: Nfc,
+    label: "Aproximação",
+    titulo: "Aproximação",
+    descricao: "O chip dentro do Integrety Tag é responsável pelo funcionamento da aproximação. Funciona tanto para Android quanto para iPhone e não é necessário baixar nenhum aplicativo.",
+    imagem: "/share-aproximacao.png",
+  },
+  {
+    id: "qrcode",
+    icone: QrCode,
+    label: "QR Code",
+    titulo: "QR Code",
+    descricao: "Gere um QR Code exclusivo do seu perfil e utilize ele sempre que quiser — em cartões impressos, banners, apresentações e muito mais.",
+    imagem: "/share-qrcode.png",
+  },
+  {
+    id: "offline",
+    icone: WifiOff,
+    label: "QR Code Offline",
+    titulo: "QR Code Offline",
+    descricao: "O QR Code offline, ao ser lido, salva o contato direto na agenda com nome, e-mail, telefone e o link do seu perfil. Funciona sem internet em eventos superlotados.",
+    imagem: "/share-offline.png",
+  },
+  {
+    id: "link",
+    icone: ExternalLink,
+    label: "Link Personalizado",
+    titulo: "Link Personalizado",
+    descricao: "Compartilhe o link do seu perfil em qualquer lugar — redes sociais, e-mail, WhatsApp ou onde quiser. Seu perfil sempre acessível com um clique.",
+    imagem: "/share-link.png",
+  },
+  {
+    id: "wallet",
+    icone: Wallet,
+    label: "Wallet",
+    titulo: "Wallet",
+    descricao: "Adicione seu perfil à carteira digital do iPhone ou Android. Acesse seu cartão digital de forma instantânea, mesmo sem abrir nenhum aplicativo.",
+    imagem: "/share-wallet.png",
+  },
+  {
+    id: "whats",
+    icone: MessageCircle,
+    label: "WhatsApp Direto",
+    titulo: "WhatsApp Direto",
+    descricao: "Envie seu perfil diretamente pelo WhatsApp com um clique. Seus contatos recebem um link bonito e funcional para acessar todas as suas informações.",
+    imagem: "/share-whats.png",
+  },
+  {
+    id: "pdf",
+    icone: FileDown,
+    label: "PDF",
+    titulo: "PDF",
+    descricao: "Baixe uma versão em PDF do seu perfil e compartilhe o arquivo mesmo off-line. Perfeito para enviar por e-mail ou apresentar em reuniões.",
+    imagem: "/share-pdf.png",
+  },
+];
+
 export default function Home() {
   const [ativo, setAtivo] = useState(funcionalidades[0]);
+  const [ativoCompartilhar, setAtivoCompartilhar] = useState(compartilhar[0]);
 
   return (
     <div className="min-h-screen bg-black text-white overflow-x-hidden font-sans">
@@ -65,7 +130,7 @@ export default function Home() {
 
       <main className="relative pt-24 sm:pt-32">
 
-        {/* HERO */}
+        {/* ─── HERO ─────────────────────────────────── */}
         <section className="max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-10 text-center">
           <div className="inline-block px-4 py-1.5 mb-6 sm:mb-8 border border-[#1ccec8]/20 rounded-full bg-[#1ccec8]/5 backdrop-blur-sm animate-bounce cursor-default">
             <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#1ccec8]">
@@ -113,9 +178,8 @@ export default function Home() {
           </div>
         </section>
 
-        {/* FUNCIONALIDADES */}
-        <section className="max-w-6xl mx-auto px-4 sm:px-6 pb-24">
-
+        {/* ─── POSSIBILIDADES ───────────────────────── */}
+        <section className="max-w-6xl mx-auto px-4 sm:px-6 pb-20">
           <div className="text-center mb-12">
             <h2 className="text-3xl sm:text-5xl font-black uppercase tracking-tighter leading-none mb-4">
               UMA INFINIDADE DE <br />
@@ -124,7 +188,6 @@ export default function Home() {
             <p className="text-gray-400 text-base">Interaja com os botões abaixo:</p>
           </div>
 
-          {/* BOTÕES */}
           <div className="border border-white/10 rounded-[2rem] bg-[#0a0a0a] p-4 sm:p-6 mb-8">
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
               {funcionalidades.map((item) => {
@@ -148,11 +211,8 @@ export default function Home() {
             </div>
           </div>
 
-          {/* PREVIEW */}
           <div className="border border-white/10 rounded-[2rem] bg-[#0a0a0a] p-8 sm:p-12">
             <div className="flex flex-col md:flex-row items-center gap-10">
-
-              {/* IMAGEM DO CELULAR */}
               <div className="w-full md:w-auto flex-shrink-0 flex justify-center">
                 <div className="w-[220px] sm:w-[260px] rounded-[2rem] overflow-hidden border border-white/10 shadow-[0_0_40px_rgba(28,206,200,0.15)]">
                   <img
@@ -165,8 +225,6 @@ export default function Home() {
                   />
                 </div>
               </div>
-
-              {/* TEXTO */}
               <div className="flex-1 text-center md:text-left">
                 <h3 className="text-2xl sm:text-4xl font-black uppercase tracking-tighter mb-4">
                   {ativo.titulo}
@@ -175,14 +233,12 @@ export default function Home() {
                   {ativo.descricao}
                 </p>
               </div>
-
             </div>
           </div>
-
         </section>
 
-        {/* SLIDER MARQUEE */}
-        <div className="relative flex overflow-x-hidden border-y border-white/5 py-6 sm:py-10 bg-black/20 backdrop-blur-sm mb-0">
+        {/* ─── SLIDER MARQUEE ───────────────────────── */}
+        <div className="relative flex overflow-x-hidden border-y border-white/5 py-6 sm:py-10 bg-black/20 backdrop-blur-sm">
           <div className="flex animate-marquee whitespace-nowrap gap-10 sm:gap-20 items-center">
             {[1, 2, 3, 4, 5, 6, 1, 2, 3, 4, 5, 6].map((i, idx) => (
               <div
@@ -199,6 +255,74 @@ export default function Home() {
             ))}
           </div>
         </div>
+
+        {/* ─── FORMAS DE COMPARTILHAR ───────────────── */}
+        <section className="max-w-6xl mx-auto px-4 sm:px-6 py-20 sm:py-28">
+
+          <div className="text-center mb-10">
+            <h2 className="text-3xl sm:text-5xl font-black uppercase tracking-tighter leading-none mb-3">
+              OPÇÕES DE  <span className="text-[#1ccec8]">COMPARTILHAMENTO</span>
+            </h2>
+            <p className="text-gray-400 text-sm sm:text-base">
+              Interaja com os botões abaixo:
+            </p>
+          </div>
+
+          <div className="bg-[#0a0a0a] border border-white/5 rounded-[2rem] overflow-hidden">
+
+            {/* BOTÕES */}
+            <div className="flex flex-wrap gap-2 p-4 sm:p-6 border-b border-white/5">
+              {compartilhar.map((item) => {
+                const Icon = item.icone;
+                const isAtivo = ativoCompartilhar.id === item.id;
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => setAtivoCompartilhar(item)}
+                    className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all ${
+                      isAtivo
+                        ? "bg-[#1ccec8] text-black"
+                        : "bg-white/5 hover:bg-white/10 text-gray-300 border border-white/10"
+                    }`}
+                  >
+                    <Icon className="w-4 h-4 shrink-0" />
+                    <span>{item.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* PREVIEW */}
+            <div className="flex flex-col md:flex-row items-center gap-8 sm:gap-12 p-8 sm:p-12">
+
+              {/* CELULAR */}
+              <div className="flex-shrink-0 flex justify-center">
+                <div className="w-[200px] sm:w-[240px] rounded-[2rem] overflow-hidden border border-white/10 shadow-[0_0_40px_rgba(28,206,200,0.12)]">
+                  <img
+                    src={ativoCompartilhar.imagem}
+                    alt={ativoCompartilhar.titulo}
+                    className="w-full h-auto object-cover"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = "/cartao.png";
+                    }}
+                  />
+                </div>
+              </div>
+
+              {/* TEXTO */}
+              <div className="flex-1 text-center md:text-left">
+                <h3 className="text-2xl sm:text-4xl font-black uppercase tracking-tighter mb-4 text-white">
+                  {ativoCompartilhar.titulo}
+                </h3>
+                <p className="text-gray-400 text-base sm:text-lg leading-relaxed max-w-lg">
+                  {ativoCompartilhar.descricao}
+                </p>
+              </div>
+
+            </div>
+          </div>
+
+        </section>
 
       </main>
     </div>
