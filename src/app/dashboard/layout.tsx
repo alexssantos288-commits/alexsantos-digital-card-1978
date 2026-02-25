@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { LogOut, User } from "lucide-react";
+import { LogOut, User, Wifi } from "lucide-react";
+
 
 export default function DashboardLayout({
   children,
@@ -63,14 +64,14 @@ export default function DashboardLayout({
       </span>
       
       <Link
-        href={`/${user?.user_metadata?.username || 'preview'}`}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="flex items-center gap-2 px-4 py-2 bg-[#1ccec8] hover:bg-[#1ccec8]/10 border border-white/10 hover:border-[#1ccec8]/30 rounded-lg transition text-sm font-bold uppercase tracking-wider"
-      >
-        <User className="w-4 h-4" />
-        Ver Perfil
-      </Link>
+          href={`/${user?.user_metadata?.username || 'preview'}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-2 px-4 py-2 bg-transparent border border-[#1ccec8] text-[#1ccec8] rounded-lg transition-all hover:bg-[#1ccec8]/10 shadow-[0_0_12px_rgba(28,206,200,0.3)] hover:shadow-[0_0_20px_rgba(28,206,200,0.5)] text-sm font-bold uppercase tracking-wider"
+          >
+          <Wifi className="w-4 h-4" />
+          Ver Perfil
+        </Link>
 
       <button
         onClick={handleLogout}
