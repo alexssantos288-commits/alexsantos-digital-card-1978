@@ -159,7 +159,7 @@ export default function Home() {
           <div className="text-center mb-12">
             <h2 className="text-3xl sm:text-5xl font-black uppercase tracking-tighter leading-none mb-4">
               OPÇÕES DE MUDANÇA <br />
-              <span className="text-[#1ccec8]">NO PERFIL</span>
+              <span className="text-[#1ccec8]">NO SEU PERFIL</span>
             </h2>
             <p className="text-gray-400 text-base">Interaja com os botões abaixo:</p>
           </div>
