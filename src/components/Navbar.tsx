@@ -5,9 +5,9 @@ import { useState } from "react";
 
 const links = [
   { href: "#recursos", label: "Recursos" },
+  { href: "/sobre", label: "Sobre Nós" },
   { href: "/produtos", label: "Produtos" },
   { href: "/contato", label: "Fale Conosco" },
-  { href: "/sobre", label: "Sobre Nós" },
 ];
 
 export const Navbar = () => {
@@ -17,12 +17,10 @@ export const Navbar = () => {
     <nav className="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-md border-b border-white/5">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex justify-between items-center">
 
-        {/* LOGO */}
         <Link href="/" className="text-lg sm:text-2xl font-black uppercase tracking-tighter">
           INTEGRETY<span className="text-[#1ccec8]">TAG</span>
         </Link>
 
-        {/* DESKTOP */}
         <div className="hidden md:flex items-center gap-6">
           {links.map((link) => (
             <Link
@@ -41,7 +39,6 @@ export const Navbar = () => {
           </Link>
         </div>
 
-        {/* MOBILE BUTTON */}
         <button className="md:hidden text-white p-1" onClick={() => setMenuOpen(!menuOpen)}>
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             {menuOpen
@@ -52,7 +49,6 @@ export const Navbar = () => {
         </button>
       </div>
 
-      {/* MOBILE MENU */}
       {menuOpen && (
         <div className="md:hidden bg-black/95 border-t border-white/5 px-4 py-4 flex flex-col gap-4">
           {links.map((link) => (

@@ -46,11 +46,18 @@ export default function SobrePage() {
           </h1>
           <p className="text-gray-400 text-lg sm:text-xl max-w-2xl mx-auto leading-relaxed">
             Nascemos em Juiz de Fora com um objetivo simples: transformar a forma como profissionais
-            e empresas se apresentam ao mundo. Com tecnologia NFC e design exclusivo,
-            criamos conexões que ficam na memória.
+            e empresas se apresentam ao mundo. Com tecnologia e Soluções que funcionam de verdade!,
+            criamos conexões que ficam na memória. 
+            
+            A Integrety acredita que a internet oferece um leque de oportunidades para empresas de 
+            todos os portes e para profissionais de todas as áreas. Com a evolução natural do ambiente digital,
+            abre-se uma ampla gama de possibilidades para quem deseja expandir seus negócios, 
+            fortalecer sua presença online e captar novos leads de forma estratégica. 
+            Pensando nisso, a Integrety propõe soluções inovadoras alinhadas a esse novo cenário, 
+            desenvolvendo estratégias personalizadas para quem busca crescimento consistente e melhoria contínua.
           </p>
         </div>
-
+          
         {/* MISSÃO */}
         <div className="max-w-4xl mx-auto bg-[#0a0a0a] border border-white/5 rounded-[2rem] p-10 sm:p-16 text-center mb-16">
           <p className="text-xs font-black uppercase tracking-[0.3em] text-[#1ccec8] mb-4">
