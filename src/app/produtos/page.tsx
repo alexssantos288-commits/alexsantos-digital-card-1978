@@ -1,7 +1,6 @@
 "use client";
 
 import React from 'react';
-import Image from 'next/image';
 import { Navbar } from '@/components/Navbar';
 import { CreditCard, Zap, ShieldCheck, Check } from 'lucide-react';
 
@@ -74,11 +73,11 @@ export default function ProdutosPage() {
 
         {/* HEADER */}
         <div className="max-w-4xl mx-auto text-center mb-20">
-        <div className="inline-block px-4 py-1.5 mb-6 border border-[#1ccec8]/20 rounded-full bg-[#1ccec8]/5 backdrop-blur-sm animate-bounce cursor-default">
-        <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#1ccec8]">
-          Tecnologia NFC de última geração
-        </span>
-      </div>
+          <div className="inline-block px-4 py-1.5 mb-6 border border-[#1ccec8]/20 rounded-full bg-[#1ccec8]/5 backdrop-blur-sm animate-bounce cursor-default">
+            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#1ccec8]">
+              Tecnologia NFC de última geração
+            </span>
+          </div>
           <h1 className="text-5xl sm:text-7xl font-black uppercase tracking-tighter leading-none mb-6">
             ESCOLHA SUA <br />
             <span className="text-[#1ccec8] drop-shadow-[0_0_30px_rgba(28,206,200,0.4)]">
@@ -115,13 +114,13 @@ export default function ProdutosPage() {
                 </div>
               )}*/}
 
-              {/* IMAGEM DO PRODUTO */}
-              <div className="relative w-full h-auto overflow-hidden rounded-[2rem]">
-                  <img
-                    src="/display.png"
-                    alt="Display Integrety"
-                    className="w-full h-auto object-contain"
-                  />
+              {/* ✅ IMAGEM CORRIGIDA — usa produto.imagem dinamicamente */}
+              <div className="relative w-full h-auto overflow-hidden rounded-t-[2rem]">
+                <img
+                  src={produto.imagem}
+                  alt={produto.nome}
+                  className="w-full h-auto object-contain"
+                />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent" />
               </div>
 
