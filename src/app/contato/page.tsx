@@ -2,11 +2,12 @@
 
 import { useState } from "react";
 import { Navbar } from "@/components/Navbar";
-import { Send, MessageCircle, Mail, User } from "lucide-react";
+import { Send, MessageCircle, Mail, User, Phone } from "lucide-react";
 
 export default function ContatoPage() {
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
+  const [telefone, setTelefone] = useState("");
   const [descricao, setDescricao] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -16,6 +17,7 @@ export default function ContatoPage() {
 
 *Nome:* ${nome}
 *E-mail:* ${email}
+*Telefone:* ${telefone}
 
 *Mensagem:*
 ${descricao}`;
@@ -80,6 +82,21 @@ ${descricao}`;
               onChange={(e) => setEmail(e.target.value)}
               required
               placeholder="seu@email.com"
+              className="w-full px-4 py-3 bg-black border border-white/10 rounded-xl focus:outline-none focus:border-[#1ccec8] transition text-sm text-white placeholder:text-gray-600 min-h-[48px]"
+            />
+          </div>
+
+          {/* TELEFONE */}
+          <div>
+            <label className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-gray-400 mb-2">
+              <Phone className="w-3 h-3" /> Telefone / WhatsApp
+            </label>
+            <input
+              type="tel"
+              value={telefone}
+              onChange={(e) => setTelefone(e.target.value)}
+              required
+              placeholder="(32) 99999-9999"
               className="w-full px-4 py-3 bg-black border border-white/10 rounded-xl focus:outline-none focus:border-[#1ccec8] transition text-sm text-white placeholder:text-gray-600 min-h-[48px]"
             />
           </div>
