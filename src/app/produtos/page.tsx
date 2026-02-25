@@ -116,14 +116,12 @@ export default function ProdutosPage() {
               )}*/}
 
               {/* IMAGEM DO PRODUTO */}
-              <div className="relative w-full h-56 overflow-hidden rounded-t-[2rem] bg-[#050505]">
-                <Image
-                  src={produto.imagem}
-                  alt={`${produto.nome} - ${produto.subtitulo}`}
-                  fill
-                  className="object-cover transition-transform duration-700 group-hover:scale-105"
-                  sizes="(max-width: 768px) 100vw, 33vw"
-                />
+              <div className="relative w-full h-auto overflow-hidden rounded-[2rem]">
+                  <img
+                    src="/display.png"
+                    alt="Display Integrety"
+                    className="w-full h-auto object-contain"
+                  />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent" />
               </div>
 
