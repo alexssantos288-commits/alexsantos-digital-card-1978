@@ -58,13 +58,13 @@ export default function RecursosPage() {
             </span>
           </div>
           <h1 className="text-5xl sm:text-7xl font-black uppercase tracking-tighter leading-none mb-6">
-            NOSSOS <br />
+            INTEGRETY <br />
             <span className="text-[#1ccec8] drop-shadow-[0_0_30px_rgba(28,206,200,0.4)]">
-              RECURSOS
+              TAG
             </span>
           </h1>
           <p className="text-gray-400 text-lg max-w-xl mx-auto">
-            Ferramentas poderosas para você se conectar, impressionar e crescer profissionalmente.
+            Trazendo ferramentas poderosas para você se conectar, impressionar e crescer profissionalmente.
           </p>
         </div>
 

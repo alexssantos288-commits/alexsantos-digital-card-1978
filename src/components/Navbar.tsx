@@ -19,7 +19,7 @@ export const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex justify-between items-center">
 
         <Link href="/" className="text-lg sm:text-2xl font-black uppercase tracking-tighter">
-          INTEGRETY<span className="text-[#1ccec8]">TAG</span>
+          INTEGRETY
         </Link>
 
         <div className="hidden md:flex items-center gap-6">
