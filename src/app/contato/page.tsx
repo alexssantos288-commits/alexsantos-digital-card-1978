@@ -34,11 +34,11 @@ ${descricao}`;
 
         {/* HEADER */}
         <div className="max-w-2xl mx-auto text-center mb-14">
-          <div className="inline-block px-4 py-1.5 mb-6 border border-[#1ccec8]/20 rounded-full bg-[#1ccec8]/5">
-            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#1ccec8]">
-              Atendimento Personalizado
-            </span>
-          </div>
+        <div className="inline-block px-4 py-1.5 mb-6 border border-[#1ccec8]/20 rounded-full bg-[#1ccec8]/5 animate-bounce cursor-default">
+        <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#1ccec8]">
+          Atendimento Personalizado
+        </span>
+      </div>
           <h1 className="text-5xl sm:text-7xl font-black uppercase tracking-tighter leading-none mb-6">
             FALE <br />
             <span className="text-[#1ccec8] drop-shadow-[0_0_30px_rgba(28,206,200,0.4)]">

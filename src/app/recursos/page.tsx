@@ -51,9 +51,8 @@ export default function RecursosPage() {
 
       <main className="pt-32 pb-24 px-4">
 
-        {/* HEADER */}
         <div className="max-w-4xl mx-auto text-center mb-20">
-          <div className="inline-block px-4 py-1.5 mb-6 border border-[#1ccec8]/20 rounded-full bg-[#1ccec8]/5 backdrop-blur-sm">
+          <div className="inline-block px-4 py-1.5 mb-6 border border-[#1ccec8]/20 rounded-full bg-[#1ccec8]/5 backdrop-blur-sm animate-bounce cursor-default">
             <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#1ccec8]">
               Tudo que você precisa
             </span>
@@ -69,7 +68,6 @@ export default function RecursosPage() {
           </p>
         </div>
 
-        {/* GRID */}
         <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {recursos.map((recurso, idx) => (
             <div

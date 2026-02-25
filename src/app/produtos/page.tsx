@@ -74,11 +74,11 @@ export default function ProdutosPage() {
 
         {/* HEADER */}
         <div className="max-w-4xl mx-auto text-center mb-20">
-          <div className="inline-block px-4 py-1.5 mb-6 border border-[#1ccec8]/20 rounded-full bg-[#1ccec8]/5 backdrop-blur-sm">
-            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#1ccec8]">
-              Tecnologia NFC de última geração
-            </span>
-          </div>
+        <div className="inline-block px-4 py-1.5 mb-6 border border-[#1ccec8]/20 rounded-full bg-[#1ccec8]/5 backdrop-blur-sm animate-bounce cursor-default">
+        <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#1ccec8]">
+          Tecnologia NFC de última geração
+        </span>
+      </div>
           <h1 className="text-5xl sm:text-7xl font-black uppercase tracking-tighter leading-none mb-6">
             ESCOLHA SUA <br />
             <span className="text-[#1ccec8] drop-shadow-[0_0_30px_rgba(28,206,200,0.4)]">
