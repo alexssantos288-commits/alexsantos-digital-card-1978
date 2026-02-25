@@ -1,16 +1,75 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabase";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { LogOut, User,} from "lucide-react";
+import { useRouter } from "next/navigation";
+import { createBrowserClient } from "@supabase/ssr";
+import { useEffect, useState } from "react";
+import { LogOut, Wifi } from "lucide-react";
 
+export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+  const router = useRouter();
+  const supabase = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
+  const [user, setUser] = useState<any>(null);
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+  useEffect(() => {
+    const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+    };
+    getUser();
+  }, []);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    router.push("/auth/login");
+  };
+
   return (
-    <html lang="pt-BR">
-      <body>{children}</body>
-    </html>
+    <div className="min-h-screen bg-black text-white">
+
+      {/* NAVBAR DO DASHBOARD */}
+      <nav className="border-b border-white/5 bg-black/80 backdrop-blur-md sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+
+          {/* LOGO */}
+          <Link href="/dashboard" className="text-xl font-black uppercase tracking-tighter">
+            INTEGRETY<span className="text-[#1ccec8]">TAG</span>
+          </Link>
+
+          {/* BOTÕES */}
+          <div className="flex items-center gap-4">
+            <span className="text-sm text-gray-400 hidden md:block">
+              {user?.email}
+            </span>
+
+            <Link
+              href={`/${user?.user_metadata?.username || 'preview'}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 px-4 py-2 bg-transparent border border-[#1ccec8] text-[#1ccec8] rounded-lg transition-all hover:bg-[#1ccec8]/10 shadow-[0_0_12px_rgba(28,206,200,0.3)] hover:shadow-[0_0_20px_rgba(28,206,200,0.5)] text-sm font-bold uppercase tracking-wider"
+            >
+              <Wifi className="w-4 h-4" />
+              Ver Perfil
+            </Link>
+
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-2 px-4 py-2 bg-red-500/10 hover:bg-red-500/20 border border-red-500/50 rounded-lg transition text-sm font-bold uppercase tracking-wider text-red-500"
+            >
+              <LogOut className="w-4 h-4" />
+              Sair
+            </button>
+          </div>
+
+        </div>
+      </nav>
+
+      {/* CONTEÚDO DO DASHBOARD */}
+      {children}
+
+    </div>
   );
 }
